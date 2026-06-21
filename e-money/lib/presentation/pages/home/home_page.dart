@@ -8,7 +8,6 @@ import '../../../domain/entities/transaction_entity.dart';
 import '../../blocs/account/account_bloc.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../widgets/app_avatar.dart';
-import '../../widgets/app_logo.dart';
 import '../../widgets/feature_icon.dart';
 import '../../widgets/transaction_row.dart';
 
@@ -183,7 +182,13 @@ class _HomePageState extends State<HomePage> {
             children: [
               Row(
                 children: [
-                  const AppLogo(size: 26),
+                  Image.asset(
+                    'assets/icons/icon-dompet.png',
+                    width: 30,
+                    height: 30,
+                    color: AppColors.primary,
+                    colorBlendMode: BlendMode.srcIn,
+                  ),
                   const SizedBox(width: 7),
                   const Text('Saldo DKG',
                       style: TextStyle(
