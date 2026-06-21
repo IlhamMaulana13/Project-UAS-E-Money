@@ -17,20 +17,13 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    context.read<AuthBloc>().add(AuthCheckRequested());
+    // Hapus sesi lama agar user wajib login setiap buka aplikasi
+    context.read<AuthBloc>().add(AuthClearSession());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthAuthenticated) {
-          context.go('/home');
-        } else if (state is AuthUnauthenticated) {
-          // Stay on splash to show welcome
-        }
-      },
-      child: Scaffold(
+    return Scaffold(
         body: Container(
           decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
           child: SafeArea(
@@ -125,7 +118,6 @@ class _SplashPageState extends State<SplashPage> {
             ),
           ),
         ),
-      ),
     );
   }
 }

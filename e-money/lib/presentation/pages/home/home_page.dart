@@ -188,6 +188,11 @@ class _HomePageState extends State<HomePage> {
                     height: 30,
                     color: AppColors.primary,
                     colorBlendMode: BlendMode.srcIn,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.account_balance_wallet_rounded,
+                      color: AppColors.primary,
+                      size: 30,
+                    ),
                   ),
                   const SizedBox(width: 7),
                   const Text('Saldo DKG',

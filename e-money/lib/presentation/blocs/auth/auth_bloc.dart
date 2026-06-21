@@ -2,9 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../domain/entities/user_entity.dart';
 import '../../../domain/usecases/auth/verify_firebase_token_usecase.dart';
-import '../../../domain/usecases/auth/get_me_usecase.dart';
 import '../../../domain/usecases/auth/logout_usecase.dart';
-import '../../../domain/usecases/auth/send_otp_usecase.dart';
 import '../../../domain/repositories/auth_repository.dart';
 import '../../../core/error/failures.dart';
 
@@ -22,6 +20,7 @@ class AuthLoginWithFirebase extends AuthEvent {
   List<Object?> get props => [firebaseToken];
 }
 class AuthLogoutRequested extends AuthEvent {}
+class AuthClearSession extends AuthEvent {}
 class AuthUpdateFcmToken extends AuthEvent {
   final String fcmToken;
   AuthUpdateFcmToken(this.fcmToken);
@@ -60,24 +59,27 @@ class AuthError extends AuthState {
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final VerifyFirebaseTokenUsecase _verifyToken;
-  final GetMeUsecase _getMe;
   final LogoutUsecase _logout;
   final AuthRepository _authRepo;
 
   AuthBloc({
     required VerifyFirebaseTokenUsecase verifyToken,
-    required GetMeUsecase getMe,
     required LogoutUsecase logout,
     required AuthRepository authRepo,
   })  : _verifyToken = verifyToken,
-        _getMe = getMe,
         _logout = logout,
         _authRepo = authRepo,
         super(AuthInitial()) {
     on<AuthCheckRequested>(_onCheckRequested);
+    on<AuthClearSession>(_onClearSession);
     on<AuthLoginWithFirebase>(_onLoginWithFirebase);
     on<AuthLogoutRequested>(_onLogout);
     on<AuthUpdateFcmToken>(_onUpdateFcm);
+  }
+
+  Future<void> _onClearSession(AuthClearSession event, Emitter<AuthState> emit) async {
+    await _authRepo.logout();
+    emit(AuthUnauthenticated());
   }
 
   Future<void> _onCheckRequested(AuthCheckRequested event, Emitter<AuthState> emit) async {
