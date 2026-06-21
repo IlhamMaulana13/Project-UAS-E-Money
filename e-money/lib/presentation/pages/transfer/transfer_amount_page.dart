@@ -55,146 +55,149 @@ class _TransferAmountPageState extends State<TransferAmountPage> {
       appBar: AppTopBar(title: 'Nominal Transfer', onBack: () => context.go('/transfer')),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(22, 8, 22, 0),
-            child: Column(
-              children: [
-                // Recipient card
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: AppColors.bg,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Row(
-                    children: [
-                      widget.channel == 'bank'
-                          ? Container(
-                              width: 42,
-                              height: 42,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(11),
-                              ),
-                              child: Center(
-                                child: Text(widget.recipient['name'] as String,
-                                    style: const TextStyle(
-                                      fontFamily: 'PlusJakartaSans',
-                                      fontWeight: FontWeight.w800,
-                                      color: AppColors.primary,
-                                      fontSize: 13,
-                                    )),
-                              ),
-                            )
-                          : AppAvatar(name: widget.recipient['name'] as String, size: 42),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.channel == 'bank'
-                                  ? (widget.recipient['sub'] as String)
-                                  : (widget.recipient['name'] as String),
-                              style: const TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 14.5,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.ink,
-                              ),
-                            ),
-                            Text(widget.recipient['sub'] as String,
-                                style: const TextStyle(fontSize: 12.5, color: AppColors.slate400)),
-                          ],
-                        ),
-                      ),
-                      const Icon(Icons.verified_user_outlined, size: 20, color: AppColors.green),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                // Amount display
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Column(
-                    children: [
-                      const Text('Nominal',
-                          style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 13, color: AppColors.slate400, fontWeight: FontWeight.w600)),
-                      const SizedBox(height: 6),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Text('Rp ',
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
-                                color: _amount > 0 ? AppColors.ink : AppColors.slate300,
-                              )),
-                          Text(
-                            _amount > 0 ? _amount.toLocaleString() : '0',
-                            style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontSize: 42,
-                              fontWeight: FontWeight.w800,
-                              color: _amount > 0 ? AppColors.ink : AppColors.slate300,
-                              letterSpacing: -1,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        enough ? 'Saldo: ${CurrencyFormatter.format(balance)}' : 'Saldo tidak cukup',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w600,
-                          color: enough ? AppColors.slate400 : AppColors.red,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Wrap(
-                        spacing: 8,
-                        children: _chips.map((c) => GestureDetector(
-                          onTap: () => setState(() => _amount = c),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: AppColors.line, width: 1.4),
-                            ),
-                            child: Text(CurrencyFormatter.formatInt(c),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(22, 8, 22, 0),
+              child: Column(
+                children: [
+                  // Recipient card
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.bg,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      children: [
+                        widget.channel == 'bank'
+                            ? Container(
+                                width: 42,
+                                height: 42,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(11),
+                                ),
+                                child: Center(
+                                  child: Text(widget.recipient['name'] as String,
+                                      style: const TextStyle(
+                                        fontFamily: 'PlusJakartaSans',
+                                        fontWeight: FontWeight.w800,
+                                        color: AppColors.primary,
+                                        fontSize: 13,
+                                      )),
+                                ),
+                              )
+                            : AppAvatar(name: widget.recipient['name'] as String, size: 42),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.channel == 'bank'
+                                    ? (widget.recipient['sub'] as String)
+                                    : (widget.recipient['name'] as String),
                                 style: const TextStyle(
                                   fontFamily: 'PlusJakartaSans',
-                                  fontSize: 13,
+                                  fontSize: 14.5,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.slate600,
-                                )),
+                                  color: AppColors.ink,
+                                ),
+                              ),
+                              Text(widget.recipient['sub'] as String,
+                                  style: const TextStyle(fontSize: 12.5, color: AppColors.slate400)),
+                            ],
                           ),
-                        )).toList(),
-                      ),
-                    ],
+                        ),
+                        const Icon(Icons.verified_user_outlined, size: 20, color: AppColors.green),
+                      ],
+                    ),
                   ),
-                ),
-                AppField(
-                  value: _note,
-                  onChanged: (v) => setState(() => _note = v),
-                  placeholder: 'Tambah catatan (opsional)',
-                  prefixIcon: const Icon(Icons.receipt_outlined, size: 20),
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  // Amount display
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Column(
+                      children: [
+                        const Text('Nominal',
+                            style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 13, color: AppColors.slate400, fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 6),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text('Rp ',
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                  color: _amount > 0 ? AppColors.ink : AppColors.slate300,
+                                )),
+                            Text(
+                              _amount > 0 ? _amount.toLocaleString() : '0',
+                              style: TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 42,
+                                fontWeight: FontWeight.w800,
+                                color: _amount > 0 ? AppColors.ink : AppColors.slate300,
+                                letterSpacing: -1,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          enough ? 'Saldo: ${CurrencyFormatter.format(balance)}' : 'Saldo tidak cukup',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
+                            color: enough ? AppColors.slate400 : AppColors.red,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        Wrap(
+                          spacing: 8,
+                          children: _chips.map((c) => GestureDetector(
+                            onTap: () => setState(() => _amount = c),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: AppColors.line, width: 1.4),
+                              ),
+                              child: Text(CurrencyFormatter.formatInt(c),
+                                  style: const TextStyle(
+                                    fontFamily: 'PlusJakartaSans',
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.slate600,
+                                  )),
+                            ),
+                          )).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  AppField(
+                    value: _note,
+                    onChanged: (v) => setState(() => _note = v),
+                    placeholder: 'Tambah catatan (opsional)',
+                    prefixIcon: const Icon(Icons.receipt_outlined, size: 20),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(22, 14, 22, 0),
+            padding: const EdgeInsets.fromLTRB(22, 10, 22, 0),
             child: NumPad(onKey: _onKey),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(22, 14, 22, 18),
+            padding: const EdgeInsets.fromLTRB(22, 12, 22, 18),
             child: AppButton(
               label: 'Lanjut',
               onPressed: valid
