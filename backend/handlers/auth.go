@@ -10,6 +10,7 @@ import (
 	"emoney-2fa/services"
 
 	firebase "firebase.google.com/go/v4"
+	fbauth "firebase.google.com/go/v4/auth"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -63,16 +64,7 @@ func (h *AuthHandler) VerifyToken(c *gin.Context) {
 		return
 	}
 
-	emailVerified, _ := token.Claims["email_verified"].(bool)
-	if !emailVerified {
-		c.JSON(http.StatusForbidden, gin.H{
-			"success":    false,
-			"message":    "Email belum diverifikasi. Cek inbox email Anda.",
-			"error_code": "EMAIL_NOT_VERIFIED",
-		})
-		return
-	}
-
+	firebaseEmailVerified, _ := token.Claims["email_verified"].(bool)
 	email, _ := token.Claims["email"].(string)
 	name, _ := token.Claims["name"].(string)
 
@@ -80,12 +72,21 @@ func (h *AuthHandler) VerifyToken(c *gin.Context) {
 	result := h.db.WithContext(ctx).Where("firebase_uid = ?", token.UID).First(&user)
 
 	if result.Error == gorm.ErrRecordNotFound {
+		// User baru: harus lolos verifikasi Firebase
+		if !firebaseEmailVerified {
+			c.JSON(http.StatusForbidden, gin.H{
+				"success":    false,
+				"message":    "Email belum diverifikasi. Cek inbox email Anda.",
+				"error_code": "EMAIL_NOT_VERIFIED",
+			})
+			return
+		}
 		user = models.User{
 			FirebaseUID:   token.UID,
 			Email:         email,
 			Name:          name,
 			Role:          "user",
-			EmailVerified: emailVerified,
+			EmailVerified: true,
 		}
 		if err := h.db.WithContext(ctx).Create(&user).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -94,7 +95,6 @@ func (h *AuthHandler) VerifyToken(c *gin.Context) {
 			})
 			return
 		}
-
 		account := models.Account{UserID: user.ID, Balance: 0}
 		h.db.WithContext(ctx).Create(&account)
 	} else if result.Error != nil {
@@ -104,10 +104,19 @@ func (h *AuthHandler) VerifyToken(c *gin.Context) {
 		})
 		return
 	} else {
+		// User lama: percayai DB (OTP kami sudah memverifikasi email)
+		if !user.EmailVerified && !firebaseEmailVerified {
+			c.JSON(http.StatusForbidden, gin.H{
+				"success":    false,
+				"message":    "Email belum diverifikasi. Cek inbox email Anda.",
+				"error_code": "EMAIL_NOT_VERIFIED",
+			})
+			return
+		}
 		h.db.WithContext(ctx).Model(&user).Updates(map[string]interface{}{
 			"email":          email,
 			"name":           name,
-			"email_verified": emailVerified,
+			"email_verified": user.EmailVerified || firebaseEmailVerified,
 		})
 	}
 
@@ -311,6 +320,17 @@ func (h *AuthHandler) VerifyEmailOTP(c *gin.Context) {
 			"message": "Gagal update status email",
 		})
 		return
+	}
+
+	// Sinkronkan email_verified ke Firebase agar token berikutnya sudah reflect verified
+	var verifiedUser models.User
+	if h.db.First(&verifiedUser, userID).Error == nil {
+		if authClient, err := h.firebaseApp.Auth(c.Request.Context()); err == nil {
+			params := (&fbauth.UserToUpdate{}).EmailVerified(true)
+			if _, err := authClient.UpdateUser(c.Request.Context(), verifiedUser.FirebaseUID, params); err != nil {
+				log.Printf("[VerifyEmailOTP] Gagal update Firebase email_verified: %v", err)
+			}
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
