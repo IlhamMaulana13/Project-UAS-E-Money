@@ -14,8 +14,8 @@ class AppLogo extends StatelessWidget {
 
     Widget icon = Image.asset(
       'assets/images/logo-dompet.png',
-      width: size,
-      height: size,
+      width: 120,
+      height: 120,
       fit: BoxFit.contain,
     );
 
