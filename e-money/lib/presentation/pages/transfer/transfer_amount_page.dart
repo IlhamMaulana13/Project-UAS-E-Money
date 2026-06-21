@@ -27,6 +27,12 @@ class _TransferAmountPageState extends State<TransferAmountPage> {
 
   final _chips = [20000, 50000, 100000, 250000];
 
+  @override
+  void initState() {
+    super.initState();
+    context.read<AccountBloc>().add(AccountLoadRequested());
+  }
+
   void _onKey(String k) {
     setState(() {
       if (k == 'del') {
