@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                             letterSpacing: -0.4,
                           )),
                       const SizedBox(height: 6),
-                      const Text('Selamat datang kembali',
+                      const Text('Selamat datang Dompet Kampus! Silakan masuk untuk melanjutkan.',
                           style: TextStyle(fontSize: 14.5, color: AppColors.slate500)),
                       const SizedBox(height: 24),
                       // Google sign in
@@ -281,14 +281,10 @@ class _GoogleIcon extends StatelessWidget {
   const _GoogleIcon();
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Image.asset(
+      'assets/images/logo-google.png',
       width: 21,
       height: 21,
-      child: Image.network(
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png',
-        errorBuilder: (_, __, ___) =>
-            const Icon(Icons.g_mobiledata_rounded, size: 24, color: Colors.red),
-      ),
     );
   }
 }
