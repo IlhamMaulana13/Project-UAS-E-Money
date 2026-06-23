@@ -5,6 +5,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../blocs/payment/payment_bloc.dart';
+import '../../widgets/app_avatar.dart';
 import '../../widgets/feature_icon.dart';
 import '../../widgets/pin_pad.dart';
 
@@ -53,6 +54,97 @@ class _PinPageState extends State<PinPage> {
         otpType: AppConstants.otpTypeTotp,
       ));
     }
+  }
+
+  Widget _buildDetail() {
+    final flow = widget.flowData;
+    final kind = flow['kind'] as String? ?? '';
+    final amount = (flow['amount'] as num? ?? 0).toDouble();
+    final fee = (flow['fee'] as num? ?? 0).toDouble();
+    final note = flow['note'] as String? ?? '';
+    final total = amount + fee;
+
+    Widget leadingWidget;
+    String title;
+    String subtitle;
+
+    if (kind == 'transfer') {
+      final recipient = flow['recipient'] as Map<String, dynamic>? ?? {};
+      final recipientName = recipient['name'] as String? ?? 'Penerima';
+      final recipientSub = recipient['sub'] as String? ?? '';
+      title = recipientName;
+      subtitle = recipientSub;
+      leadingWidget = AppAvatar(name: recipientName, size: 44);
+    } else if (kind == 'topup') {
+      title = 'Top Up Saldo';
+      subtitle = 'Saldo akan bertambah';
+      leadingWidget = const FeatureIcon(icon: Icons.add_card_rounded, tone: 'green', size: 44, iconSize: 22);
+    } else {
+      title = flow['description'] as String? ?? 'Pembayaran';
+      subtitle = 'Pembayaran QRIS';
+      leadingWidget = const FeatureIcon(icon: Icons.storefront_outlined, tone: 'violet', size: 44, iconSize: 22);
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.primarySurface,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              leadingWidget,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.ink,
+                        )),
+                    if (subtitle.isNotEmpty)
+                      Text(subtitle,
+                          style: const TextStyle(fontSize: 12.5, color: AppColors.slate400)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          const Divider(height: 1, color: AppColors.line2),
+          const SizedBox(height: 10),
+          if (kind == 'transfer' && fee > 0) ...[
+            _DetailRow(label: 'Nominal', value: CurrencyFormatter.format(amount)),
+            const SizedBox(height: 6),
+            _DetailRow(label: 'Biaya admin', value: CurrencyFormatter.format(fee)),
+            const SizedBox(height: 8),
+            const Divider(height: 1, color: AppColors.line2),
+            const SizedBox(height: 8),
+            _DetailRow(label: 'Total', value: CurrencyFormatter.format(total), bold: true),
+          ] else ...[
+            _DetailRow(
+              label: kind == 'topup' ? 'Jumlah top up' : 'Total tagihan',
+              value: CurrencyFormatter.format(amount),
+              bold: true,
+            ),
+          ],
+          if (kind == 'transfer' && note.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            _DetailRow(label: 'Catatan', value: note),
+          ],
+        ],
+      ),
+    );
   }
 
   @override
@@ -149,6 +241,8 @@ class _PinPageState extends State<PinPage> {
                         const Text('Masukkan 6 digit PIN keamanan kamu',
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 13.5, color: AppColors.slate500)),
+                        const SizedBox(height: 20),
+                        _buildDetail(),
                         const Spacer(),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 80),
@@ -179,6 +273,36 @@ class _PinPageState extends State<PinPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool bold;
+  const _DetailRow({required this.label, required this.value, this.bold = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label,
+            style: TextStyle(
+              fontFamily: 'PlusJakartaSans',
+              fontSize: bold ? 14.5 : 13.5,
+              fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
+              color: AppColors.slate500,
+            )),
+        Text(value,
+            style: TextStyle(
+              fontFamily: 'PlusJakartaSans',
+              fontSize: bold ? 14.5 : 13.5,
+              fontWeight: bold ? FontWeight.w800 : FontWeight.w600,
+              color: bold ? AppColors.primary : AppColors.ink,
+            )),
+      ],
     );
   }
 }
