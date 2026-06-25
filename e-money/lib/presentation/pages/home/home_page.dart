@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/deeplink_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../domain/entities/transaction_entity.dart';
@@ -25,6 +26,15 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     context.read<AccountBloc>().add(AccountLoadRequested());
     context.read<AuthBloc>().add(AuthCheckRequested());
+
+    // Cek deeplink yang tertunda (cold-start: event tiba sebelum listener siap)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final pending = DeeplinkService().pendingPayment;
+      if (pending != null) {
+        DeeplinkService().consumePendingPayment();
+        context.push('/payment-deeplink', extra: pending);
+      }
+    });
   }
 
   @override

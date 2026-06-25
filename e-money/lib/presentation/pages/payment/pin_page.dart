@@ -8,7 +8,6 @@ import '../../blocs/payment/payment_bloc.dart';
 import '../../widgets/app_avatar.dart';
 import '../../widgets/feature_icon.dart';
 import '../../widgets/pin_pad.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PinPage extends StatefulWidget {
   final Map<String, dynamic> flowData;
@@ -28,22 +27,6 @@ class _PinPageState extends State<PinPage> {
     // Here we simulate: any 6-digit PIN triggers the payment
     setState(() => _busy = true);
     _processPayment();
-  }
-
-  Future<void> _sendCallbackToMerchant() async {
-    final flow = widget.flowData;
-    // Pastikan Deeplink Data yang dikirim dari PaymentDeeplinkPage masuk ke flowData
-    final callbackUrl = flow['callback_url'] as String?;
-
-    if (callbackUrl != null && callbackUrl.isNotEmpty) {
-      final uri = Uri.parse('$callbackUrl?status=success');
-
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-        // Keluar dari E-Money setelah memanggil callback
-        if (mounted) Navigator.popUntil(context, (route) => route.isFirst);
-      }
-    }
   }
 
   void _processPayment() {
@@ -183,22 +166,37 @@ class _PinPageState extends State<PinPage> {
         final kind = widget.flowData['kind'] as String?;
 
         if (state is PaymentTransferSuccess) {
+          final result = state.result;
           if (kind == 'deeplink') {
-            // JIKA DEEPLINK: Panggil callback ke Toko Jersey
-            _sendCallbackToMerchant();
+            final callbackUrl =
+                widget.flowData['callback_url'] as String? ?? '';
+            final merchantName =
+                widget.flowData['merchant_name'] as String? ?? 'Merchant';
+            final reference =
+                widget.flowData['reference'] as String? ?? '';
+            context.go('/success', extra: {
+              'title': 'Pembayaran Berhasil',
+              'subtitle': 'Transaksi ke $merchantName selesai',
+              'amount': result.amount,
+              'callback_url': callbackUrl,
+              'merchant_name': merchantName,
+              'lines': [
+                ['Merchant', merchantName],
+                ['Jumlah', CurrencyFormatter.format(result.amount)],
+                ['Saldo setelah', CurrencyFormatter.format(result.balanceAfter)],
+                if (reference.isNotEmpty) ['No. Ref', reference],
+                ['ID Transaksi', 'DKG${result.transactionId}'],
+              ],
+            });
           } else {
-            // JIKA TRANSFER BIASA: Arahkan ke halaman sukses internal
-            final result = state.result;
+            // Transfer biasa
             context.go('/success', extra: {
               'title': 'Transfer berhasil',
               'subtitle': result.description,
               'amount': result.amount,
               'lines': [
                 ['Jumlah', CurrencyFormatter.format(result.amount)],
-                [
-                  'Saldo setelah',
-                  CurrencyFormatter.format(result.balanceAfter)
-                ],
+                ['Saldo setelah', CurrencyFormatter.format(result.balanceAfter)],
                 ['Ref', 'DKG${result.transactionId}'],
               ],
             });

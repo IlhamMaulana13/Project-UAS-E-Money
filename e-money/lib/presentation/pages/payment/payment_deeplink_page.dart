@@ -1,6 +1,10 @@
-import 'package:dompet_kampus_global/presentation/pages/payment/pin_page.dart';
 import 'package:flutter/material.dart';
-import 'package:dompet_kampus_global/core/services/deeplink_service.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/services/deeplink_service.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/currency_formatter.dart';
+import '../../widgets/app_button.dart';
+import '../../widgets/app_logo.dart';
 
 class PaymentDeeplinkPage extends StatelessWidget {
   final DeeplinkPaymentData paymentData;
@@ -10,148 +14,275 @@ class PaymentDeeplinkPage extends StatelessWidget {
     required this.paymentData,
   });
 
-  // Fungsi mengubah angka menjadi format Rupiah
-  String _formatCurrency(double amount) {
-    return amount.toStringAsFixed(0).replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (m) => '${m[1]}.',
-        );
-  }
-
-  void _onConfirmPayment(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PinPage(
-          flowData: {
-            'kind': 'deeplink',
-            'amount': paymentData.amount,
-            'description': paymentData.description,
-            'callback_url': paymentData.callbackUrl,
-          },
-        ),
-      ),
-    );
-  }
-
-  void _onCancel(BuildContext context) {
-    // Jika user menolak membayar, kembalikan ke beranda
-    Navigator.pop(context);
+  void _onConfirm(BuildContext context) {
+    context.go('/pin', extra: {
+      'kind': 'deeplink',
+      'amount': paymentData.amount,
+      'description': paymentData.description,
+      'callback_url': paymentData.callbackUrl,
+      'merchant_name': paymentData.merchantName,
+      'reference': paymentData.reference,
+      'merchant_id': paymentData.merchantId,
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Konfirmasi Pembayaran'),
-        centerTitle: true,
-        automaticallyImplyLeading:
-            false, // Menghilangkan tombol back (user harus tekan batal)
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            const Icon(
-              Icons.account_balance_wallet,
-              size: 80,
-              color: Colors.blue,
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Anda akan melakukan pembayaran ke:',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              paymentData
-                  .merchantName, // Menampilkan: Toko Jersey AppsMarketplace
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  const Text(
-                    'Total Tagihan',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Rp ${_formatCurrency(paymentData.amount)}",
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Divider(),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Detail:',
-                          style: TextStyle(color: Colors.grey)),
-                      Text(paymentData.description,
-                          style: const TextStyle(fontWeight: FontWeight.w500)),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('ID Trx:',
-                          style: TextStyle(color: Colors.grey)),
-                      Text(paymentData.reference,
-                          style: const TextStyle(fontWeight: FontWeight.w500)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const Spacer(),
-            Row(
+      backgroundColor: AppColors.bg,
+      body: Column(
+        children: [
+          // Header
+          Container(
+            color: AppColors.primary,
+            padding: EdgeInsets.fromLTRB(
+                16, MediaQuery.of(context).padding.top + 6, 16, 14),
+            child: Row(
               children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _onCancel(context),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red),
-                    ),
-                    child: const Text('Batal'),
-                  ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white, size: 20),
+                  onPressed: () => context.go('/home'),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => _onConfirmPayment(context),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.blue,
+                const Expanded(
+                  child: Text(
+                    'Konfirmasi Pembayaran',
+                    style: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 17,
                     ),
-                    child: const Text('Konfirmasi',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+              child: Column(
+                children: [
+                  // Merchant card
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: AppColors.shadowSoft,
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            color: AppColors.primarySurface,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Center(
+                            child: Icon(Icons.storefront_outlined,
+                                size: 32, color: AppColors.primary),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Pembayaran ke',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 13,
+                            color: AppColors.slate400,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          paymentData.merchantName,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.ink,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  // Amount card
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 24, horizontal: 20),
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: AppColors.shadowPrimary,
+                    ),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Total Tagihan',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 13.5,
+                            color: Colors.white70,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          CurrencyFormatter.format(paymentData.amount),
+                          style: const TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 34,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  // Detail rows
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: AppColors.shadowSoft,
+                    ),
+                    child: Column(
+                      children: [
+                        _Row(
+                          label: 'Deskripsi',
+                          value: paymentData.description,
+                        ),
+                        if (paymentData.reference.isNotEmpty) ...[
+                          const Divider(height: 1, color: AppColors.line2),
+                          _Row(
+                            label: 'No. Referensi',
+                            value: paymentData.reference,
+                          ),
+                        ],
+                        const Divider(height: 1, color: AppColors.line2),
+                        _Row(
+                          label: 'ID Merchant',
+                          value: paymentData.merchantId,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  // Payment method
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: AppColors.shadowSoft,
+                      border: Border.all(
+                          color: AppColors.primaryBorder, width: 1.8),
+                    ),
+                    child: Row(
+                      children: [
+                        const AppLogo(size: 40),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Dompet Kampus Global',
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 14.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.ink,
+                                ),
+                              ),
+                              Text(
+                                'Saldo · pembayaran instan',
+                                style: TextStyle(
+                                    fontSize: 12.5,
+                                    color: AppColors.slate400),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.check_rounded,
+                            size: 20, color: AppColors.primary),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // Action bar
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.fromLTRB(
+                16, 12, 16, MediaQuery.of(context).padding.bottom + 16),
+            child: Column(
+              children: [
+                AppButton(
+                  label:
+                      'Bayar ${CurrencyFormatter.format(paymentData.amount)}',
+                  onPressed: () => _onConfirm(context),
+                ),
+                const SizedBox(height: 10),
+                AppButton(
+                  label: 'Batal',
+                  variant: AppButtonVariant.outline,
+                  onPressed: () => context.go('/home'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Row extends StatelessWidget {
+  final String label;
+  final String value;
+  const _Row({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 11),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontFamily: 'PlusJakartaSans',
+              fontSize: 13.5,
+              color: AppColors.slate500,
+            ),
+          ),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontFamily: 'PlusJakartaSans',
+                fontSize: 13.5,
+                fontWeight: FontWeight.w700,
+                color: AppColors.ink,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

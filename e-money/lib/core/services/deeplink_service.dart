@@ -32,6 +32,11 @@ class DeeplinkService {
   Stream<DeeplinkPaymentData> get onPaymentReceived =>
       _paymentDataController.stream;
 
+  // Buffer untuk cold-start: deeplink tiba sebelum listener terpasang
+  DeeplinkPaymentData? _pendingPayment;
+  DeeplinkPaymentData? get pendingPayment => _pendingPayment;
+  void consumePendingPayment() => _pendingPayment = null;
+
   Future<void> init() async {
     try {
       final initialUri = await _appLinks.getInitialLink();
@@ -66,6 +71,8 @@ class DeeplinkService {
           callbackUrl: callbackUrl,
         );
 
+        // Simpan untuk cold-start (sebelum listener terpasang)
+        _pendingPayment = paymentData;
         _paymentDataController.add(paymentData);
       }
     }

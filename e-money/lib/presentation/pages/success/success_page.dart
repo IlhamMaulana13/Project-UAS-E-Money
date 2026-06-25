@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../blocs/account/account_bloc.dart';
 import '../../widgets/app_button.dart';
-import '../../widgets/feature_icon.dart';
 import '../../widgets/success_check.dart';
 
 class SuccessPage extends StatefulWidget {
@@ -13,6 +13,8 @@ class SuccessPage extends StatefulWidget {
   final String subtitle;
   final double amount;
   final List<List<String>> lines;
+  final String callbackUrl;
+  final String merchantName;
 
   const SuccessPage({
     super.key,
@@ -20,6 +22,8 @@ class SuccessPage extends StatefulWidget {
     required this.subtitle,
     required this.amount,
     required this.lines,
+    this.callbackUrl = '',
+    this.merchantName = '',
   });
 
   @override
@@ -30,8 +34,25 @@ class _SuccessPageState extends State<SuccessPage> {
   @override
   void initState() {
     super.initState();
-    // Refresh account data after successful transaction
     context.read<AccountBloc>().add(AccountRefreshRequested());
+  }
+
+  Future<void> _returnToMerchant(BuildContext context) async {
+    final rawUrl = widget.callbackUrl;
+    if (rawUrl.isEmpty) {
+      context.go('/home');
+      return;
+    }
+    final base = Uri.parse(rawUrl);
+    final callbackUri = base.replace(queryParameters: {
+      ...base.queryParameters,
+      'status': 'success',
+      'amount': widget.amount.toStringAsFixed(0),
+    });
+    if (await canLaunchUrl(callbackUri)) {
+      await launchUrl(callbackUri, mode: LaunchMode.externalApplication);
+    }
+    if (context.mounted) context.go('/home');
   }
 
   @override
@@ -130,17 +151,31 @@ class _SuccessPageState extends State<SuccessPage> {
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
               child: Column(
                 children: [
-                  AppButton(
-                    label: 'Selesai',
-                    onPressed: () => context.go('/home'),
-                  ),
-                  const SizedBox(height: 10),
-                  AppButton(
-                    label: 'Bagikan bukti transaksi',
-                    variant: AppButtonVariant.soft,
-                    icon: const Icon(Icons.copy_rounded, size: 18, color: AppColors.primary),
-                    onPressed: () {},
-                  ),
+                  if (widget.callbackUrl.isNotEmpty) ...[
+                    AppButton(
+                      label: 'Kembali ke ${widget.merchantName}',
+                      onPressed: () => _returnToMerchant(context),
+                    ),
+                    const SizedBox(height: 10),
+                    AppButton(
+                      label: 'Selesai',
+                      variant: AppButtonVariant.outline,
+                      onPressed: () => context.go('/home'),
+                    ),
+                  ] else ...[
+                    AppButton(
+                      label: 'Selesai',
+                      onPressed: () => context.go('/home'),
+                    ),
+                    const SizedBox(height: 10),
+                    AppButton(
+                      label: 'Bagikan bukti transaksi',
+                      variant: AppButtonVariant.soft,
+                      icon: const Icon(Icons.copy_rounded,
+                          size: 18, color: AppColors.primary),
+                      onPressed: () {},
+                    ),
+                  ],
                 ],
               ),
             ),
