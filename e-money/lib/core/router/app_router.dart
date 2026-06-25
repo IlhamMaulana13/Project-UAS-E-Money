@@ -18,6 +18,7 @@ import '../../presentation/pages/auth/twofa_totp_page.dart';
 import '../../presentation/pages/auth/verify_email_page.dart';
 import '../../presentation/pages/history/history_page.dart';
 import '../../presentation/pages/home/home_page.dart';
+import '../../presentation/pages/account/set_pin_page.dart';
 import '../../presentation/pages/merchant/merchant_checkout_page.dart';
 import '../../presentation/pages/payment/payment_qr_page.dart';
 import '../../presentation/pages/payment/pin_page.dart';
@@ -186,6 +187,10 @@ class AppRouter {
                     [],
               ));
             },
+          ),
+          GoRoute(
+            path: '/set-pin',
+            builder: (_, __) => const SetPinPage(),
           ),
           GoRoute(
             path: '/merchant',

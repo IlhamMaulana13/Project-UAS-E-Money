@@ -123,8 +123,8 @@ class AccountPage extends StatelessWidget {
                               icon: Icons.lock_outline_rounded,
                               tone: 'blue',
                               title: 'Ubah PIN keamanan',
-                              subtitle: 'Terakhir diubah 2 bln lalu',
-                              onTap: () {},
+                              subtitle: 'Atur atau ubah PIN transaksi',
+                              onTap: () => context.push('/set-pin'),
                             ),
                             const Divider(height: 1, indent: 56, color: AppColors.line2),
                             _Row(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
@@ -18,13 +19,40 @@ class PinPage extends StatefulWidget {
 }
 
 class _PinPageState extends State<PinPage> {
+  final _storage = const FlutterSecureStorage();
+
   String _pin = '';
   bool _busy = false;
   bool _hasError = false;
 
-  void _onComplete(String pin) {
-    // In production, validate PIN with backend
-    // Here we simulate: any 6-digit PIN triggers the payment
+  Future<void> _onComplete(String pin) async {
+    final stored = await _storage.read(key: AppConstants.kPin);
+    if (stored == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('PIN belum diatur. Silakan buat PIN terlebih dahulu.'),
+          backgroundColor: AppColors.slate600,
+          action: SnackBarAction(
+            label: 'Buat PIN',
+            textColor: Colors.white,
+            onPressed: () => context.push('/set-pin'),
+          ),
+        ),
+      );
+      setState(() => _pin = '');
+      return;
+    }
+    if (pin != stored) {
+      setState(() {
+        _hasError = true;
+        _pin = '';
+      });
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) setState(() => _hasError = false);
+      });
+      return;
+    }
     setState(() => _busy = true);
     _processPayment();
   }
@@ -294,7 +322,7 @@ class _PinPageState extends State<PinPage> {
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 80),
                           transform: _hasError
-                              ? (Matrix4.identity()..translate(10.0))
+                              ? Matrix4.translationValues(10.0, 0, 0)
                               : Matrix4.identity(),
                           child: PinPad(
                             value: _pin,
