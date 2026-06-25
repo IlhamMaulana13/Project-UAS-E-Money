@@ -1,3 +1,4 @@
+import 'package:dompet_kampus_global/core/services/deeplink_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Bloc.observer = const AppBlocObserver();
+
+  // 1. Inisialisasi Service Deeplink sebelum aplikasi berjalan
+  await DeeplinkService().init();
 
   // Initialize Firebase — pastikan google-services.json/GoogleService-Info.plist sudah ada
   await Firebase.initializeApp();
