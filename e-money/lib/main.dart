@@ -39,8 +39,31 @@ void main() async {
   runApp(const DompetKampusApp());
 }
 
-class DompetKampusApp extends StatelessWidget {
+class DompetKampusApp extends StatefulWidget {
   const DompetKampusApp({super.key});
+
+  @override
+  State<DompetKampusApp> createState() => _DompetKampusAppState();
+}
+
+class _DompetKampusAppState extends State<DompetKampusApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Dengarkan Deeplink dan arahkan menggunakan GoRouter
+    DeeplinkService().onPaymentReceived.listen((paymentData) {
+      // Asumsi: Anda memiliki route bernama '/payment-deeplink' di AppRouter
+      // Kita kirimkan paymentData sebagai 'extra' ke router
+      AppRouter.router.push('/payment-deeplink', extra: paymentData);
+    });
+  }
+
+  @override
+  void dispose() {
+    DeeplinkService().dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
