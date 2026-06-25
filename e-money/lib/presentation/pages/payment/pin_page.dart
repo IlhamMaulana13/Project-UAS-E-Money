@@ -179,19 +179,32 @@ class _PinPageState extends State<PinPage> {
   Widget build(BuildContext context) {
     return BlocListener<PaymentBloc, PaymentState>(
       listener: (context, state) {
+        // Ambil informasi jenis transaksi dari flowData
+        final kind = widget.flowData['kind'] as String?;
+
         if (state is PaymentTransferSuccess) {
-          final result = state.result;
-          context.go('/success', extra: {
-            'title': 'Transfer berhasil',
-            'subtitle': result.description,
-            'amount': result.amount,
-            'lines': [
-              ['Jumlah', CurrencyFormatter.format(result.amount)],
-              ['Saldo setelah', CurrencyFormatter.format(result.balanceAfter)],
-              ['Ref', 'DKG${result.transactionId}'],
-            ],
-          });
+          if (kind == 'deeplink') {
+            // JIKA DEEPLINK: Panggil callback ke Toko Jersey
+            _sendCallbackToMerchant();
+          } else {
+            // JIKA TRANSFER BIASA: Arahkan ke halaman sukses internal
+            final result = state.result;
+            context.go('/success', extra: {
+              'title': 'Transfer berhasil',
+              'subtitle': result.description,
+              'amount': result.amount,
+              'lines': [
+                ['Jumlah', CurrencyFormatter.format(result.amount)],
+                [
+                  'Saldo setelah',
+                  CurrencyFormatter.format(result.balanceAfter)
+                ],
+                ['Ref', 'DKG${result.transactionId}'],
+              ],
+            });
+          }
         } else if (state is PaymentTopupSuccess) {
+
           context.go('/success', extra: {
             'title': 'Top up berhasil',
             'subtitle': 'Saldo kamu bertambah',
