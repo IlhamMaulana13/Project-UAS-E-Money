@@ -8,6 +8,7 @@ import '../../blocs/payment/payment_bloc.dart';
 import '../../widgets/app_avatar.dart';
 import '../../widgets/feature_icon.dart';
 import '../../widgets/pin_pad.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PinPage extends StatefulWidget {
   final Map<String, dynamic> flowData;
@@ -29,6 +30,22 @@ class _PinPageState extends State<PinPage> {
     _processPayment();
   }
 
+  Future<void> _sendCallbackToMerchant() async {
+    final flow = widget.flowData;
+    // Pastikan Deeplink Data yang dikirim dari PaymentDeeplinkPage masuk ke flowData
+    final callbackUrl = flow['callback_url'] as String?;
+
+    if (callbackUrl != null && callbackUrl.isNotEmpty) {
+      final uri = Uri.parse('$callbackUrl?status=success');
+
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        // Keluar dari E-Money setelah memanggil callback
+        if (mounted) Navigator.popUntil(context, (route) => route.isFirst);
+      }
+    }
+  }
+
   void _processPayment() {
     final flow = widget.flowData;
     final kind = flow['kind'] as String? ?? '';
@@ -36,23 +53,23 @@ class _PinPageState extends State<PinPage> {
     if (kind == 'transfer') {
       // Use OTP from 2FA — for demo we use a hardcoded type
       context.read<PaymentBloc>().add(PaymentTransferRequested(
-        amount: (flow['amount'] as num).toDouble(),
-        description: flow['note'] as String? ?? 'Transfer',
-        otpCode: '000000', // In production: get from actual 2FA
-        otpType: AppConstants.otpTypeTotp,
-      ));
+            amount: (flow['amount'] as num).toDouble(),
+            description: flow['note'] as String? ?? 'Transfer',
+            otpCode: '000000', // In production: get from actual 2FA
+            otpType: AppConstants.otpTypeTotp,
+          ));
     } else if (kind == 'topup') {
       context.read<PaymentBloc>().add(PaymentTopupRequested(
-        (flow['amount'] as num).toDouble(),
-      ));
+            (flow['amount'] as num).toDouble(),
+          ));
     } else if (kind == 'payment' || kind == 'deeplink') {
       // QRIS payment → also uses transfer endpoint
       context.read<PaymentBloc>().add(PaymentTransferRequested(
-        amount: (flow['amount'] as num).toDouble(),
-        description: flow['description'] as String? ?? 'Pembayaran QRIS',
-        otpCode: '000000',
-        otpType: AppConstants.otpTypeTotp,
-      ));
+            amount: (flow['amount'] as num).toDouble(),
+            description: flow['description'] as String? ?? 'Pembayaran QRIS',
+            otpCode: '000000',
+            otpType: AppConstants.otpTypeTotp,
+          ));
     }
   }
 
@@ -78,11 +95,16 @@ class _PinPageState extends State<PinPage> {
     } else if (kind == 'topup') {
       title = 'Top Up Saldo';
       subtitle = 'Saldo akan bertambah';
-      leadingWidget = const FeatureIcon(icon: Icons.add_card_rounded, tone: 'green', size: 44, iconSize: 22);
+      leadingWidget = const FeatureIcon(
+          icon: Icons.add_card_rounded, tone: 'green', size: 44, iconSize: 22);
     } else {
       title = flow['description'] as String? ?? 'Pembayaran';
       subtitle = 'Pembayaran QRIS';
-      leadingWidget = const FeatureIcon(icon: Icons.storefront_outlined, tone: 'violet', size: 44, iconSize: 22);
+      leadingWidget = const FeatureIcon(
+          icon: Icons.storefront_outlined,
+          tone: 'violet',
+          size: 44,
+          iconSize: 22);
     }
 
     return Container(
@@ -114,7 +136,8 @@ class _PinPageState extends State<PinPage> {
                         )),
                     if (subtitle.isNotEmpty)
                       Text(subtitle,
-                          style: const TextStyle(fontSize: 12.5, color: AppColors.slate400)),
+                          style: const TextStyle(
+                              fontSize: 12.5, color: AppColors.slate400)),
                   ],
                 ),
               ),
@@ -124,13 +147,18 @@ class _PinPageState extends State<PinPage> {
           const Divider(height: 1, color: AppColors.line2),
           const SizedBox(height: 10),
           if (kind == 'transfer' && fee > 0) ...[
-            _DetailRow(label: 'Nominal', value: CurrencyFormatter.format(amount)),
+            _DetailRow(
+                label: 'Nominal', value: CurrencyFormatter.format(amount)),
             const SizedBox(height: 6),
-            _DetailRow(label: 'Biaya admin', value: CurrencyFormatter.format(fee)),
+            _DetailRow(
+                label: 'Biaya admin', value: CurrencyFormatter.format(fee)),
             const SizedBox(height: 8),
             const Divider(height: 1, color: AppColors.line2),
             const SizedBox(height: 8),
-            _DetailRow(label: 'Total', value: CurrencyFormatter.format(total), bold: true),
+            _DetailRow(
+                label: 'Total',
+                value: CurrencyFormatter.format(total),
+                bold: true),
           ] else ...[
             _DetailRow(
               label: kind == 'topup' ? 'Jumlah top up' : 'Total tagihan',
@@ -174,14 +202,19 @@ class _PinPageState extends State<PinPage> {
             ],
           });
         } else if (state is PaymentInvalidOtp) {
-          setState(() { _busy = false; _hasError = true; _pin = ''; });
+          setState(() {
+            _busy = false;
+            _hasError = true;
+            _pin = '';
+          });
           Future.delayed(const Duration(milliseconds: 800), () {
             if (mounted) setState(() => _hasError = false);
           });
         } else if (state is PaymentError) {
           setState(() => _busy = false);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: AppColors.red),
+            SnackBar(
+                content: Text(state.message), backgroundColor: AppColors.red),
           );
         }
       },
@@ -227,7 +260,9 @@ class _PinPageState extends State<PinPage> {
                             color: AppColors.primarySurface,
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Center(child: Icon(Icons.lock_outline_rounded, size: 26, color: AppColors.primary)),
+                          child: const Center(
+                              child: Icon(Icons.lock_outline_rounded,
+                                  size: 26, color: AppColors.primary)),
                         ),
                         const SizedBox(height: 16),
                         const Text('Masukkan PIN',
@@ -240,13 +275,16 @@ class _PinPageState extends State<PinPage> {
                         const SizedBox(height: 6),
                         const Text('Masukkan 6 digit PIN keamanan kamu',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 13.5, color: AppColors.slate500)),
+                            style: TextStyle(
+                                fontSize: 13.5, color: AppColors.slate500)),
                         const SizedBox(height: 20),
                         _buildDetail(),
                         const Spacer(),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 80),
-                          transform: _hasError ? (Matrix4.identity()..translate(10.0)) : Matrix4.identity(),
+                          transform: _hasError
+                              ? (Matrix4.identity()..translate(10.0))
+                              : Matrix4.identity(),
                           child: PinPad(
                             value: _pin,
                             onChanged: (v) => setState(() => _pin = v),
@@ -256,11 +294,16 @@ class _PinPageState extends State<PinPage> {
                         const SizedBox(height: 18),
                         const Text.rich(TextSpan(
                           text: 'Lupa PIN? ',
-                          style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12.5, color: AppColors.slate400),
+                          style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 12.5,
+                              color: AppColors.slate400),
                           children: [
                             TextSpan(
                               text: 'Reset',
-                              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
+                              style: TextStyle(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w700),
                             ),
                           ],
                         )),
@@ -281,7 +324,8 @@ class _DetailRow extends StatelessWidget {
   final String label;
   final String value;
   final bool bold;
-  const _DetailRow({required this.label, required this.value, this.bold = false});
+  const _DetailRow(
+      {required this.label, required this.value, this.bold = false});
 
   @override
   Widget build(BuildContext context) {

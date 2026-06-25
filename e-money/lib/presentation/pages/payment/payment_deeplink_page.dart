@@ -1,28 +1,36 @@
+import 'package:dompet_kampus_global/presentation/pages/payment/pin_page.dart';
 import 'package:flutter/material.dart';
-// Pastikan path import ini sesuai dengan tempat Anda menaruh deeplink_service.dart
 import 'package:dompet_kampus_global/core/services/deeplink_service.dart';
 
 class PaymentDeeplinkPage extends StatelessWidget {
   final DeeplinkPaymentData paymentData;
 
   const PaymentDeeplinkPage({
-    super.key, 
+    super.key,
     required this.paymentData,
   });
 
   // Fungsi mengubah angka menjadi format Rupiah
   String _formatCurrency(double amount) {
     return amount.toStringAsFixed(0).replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (m) => '${m[1]}.',
-    );
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (m) => '${m[1]}.',
+        );
   }
 
   void _onConfirmPayment(BuildContext context) {
-    // Sesuai materi, fitur selanjutnya adalah mengarahkan ke halaman PIN.
-    // Sementara kita beri notifikasi saja (placeholder).
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Akan dialihkan ke halaman Input PIN...')),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PinPage(
+          flowData: {
+            'kind': 'deeplink',
+            'amount': paymentData.amount,
+            'description': paymentData.description,
+            'callback_url': paymentData.callbackUrl,
+          },
+        ),
+      ),
     );
   }
 
@@ -38,7 +46,8 @@ class PaymentDeeplinkPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Konfirmasi Pembayaran'),
         centerTitle: true,
-        automaticallyImplyLeading: false, // Menghilangkan tombol back (user harus tekan batal)
+        automaticallyImplyLeading:
+            false, // Menghilangkan tombol back (user harus tekan batal)
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
@@ -59,7 +68,8 @@ class PaymentDeeplinkPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              paymentData.merchantName, // Menampilkan: Toko Jersey AppsMarketplace
+              paymentData
+                  .merchantName, // Menampilkan: Toko Jersey AppsMarketplace
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -80,8 +90,8 @@ class PaymentDeeplinkPage extends StatelessWidget {
                   Text(
                     "Rp ${_formatCurrency(paymentData.amount)}",
                     style: const TextStyle(
-                      fontSize: 32, 
-                      fontWeight: FontWeight.bold, 
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
                       color: Colors.blue,
                     ),
                   ),
@@ -92,16 +102,20 @@ class PaymentDeeplinkPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Detail:', style: TextStyle(color: Colors.grey)),
-                      Text(paymentData.description, style: const TextStyle(fontWeight: FontWeight.w500)),
+                      const Text('Detail:',
+                          style: TextStyle(color: Colors.grey)),
+                      Text(paymentData.description,
+                          style: const TextStyle(fontWeight: FontWeight.w500)),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('ID Trx:', style: TextStyle(color: Colors.grey)),
-                      Text(paymentData.reference, style: const TextStyle(fontWeight: FontWeight.w500)),
+                      const Text('ID Trx:',
+                          style: TextStyle(color: Colors.grey)),
+                      Text(paymentData.reference,
+                          style: const TextStyle(fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ],
@@ -129,7 +143,9 @@ class PaymentDeeplinkPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: Colors.blue,
                     ),
-                    child: const Text('Konfirmasi', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    child: const Text('Konfirmasi',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],
