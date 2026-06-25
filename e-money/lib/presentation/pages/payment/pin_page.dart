@@ -27,20 +27,10 @@ class _PinPageState extends State<PinPage> {
 
   Future<void> _onComplete(String pin) async {
     final stored = await _storage.read(key: AppConstants.kPin);
+    if (!mounted) return;
     if (stored == null) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('PIN belum diatur. Silakan buat PIN terlebih dahulu.'),
-          backgroundColor: AppColors.slate600,
-          action: SnackBarAction(
-            label: 'Buat PIN',
-            textColor: Colors.white,
-            onPressed: () => context.push('/set-pin'),
-          ),
-        ),
-      );
       setState(() => _pin = '');
+      context.push('/set-pin');
       return;
     }
     if (pin != stored) {
@@ -54,32 +44,30 @@ class _PinPageState extends State<PinPage> {
       return;
     }
     setState(() => _busy = true);
-    _processPayment();
+    _processPayment(pin);
   }
 
-  void _processPayment() {
+  void _processPayment(String pin) {
     final flow = widget.flowData;
     final kind = flow['kind'] as String? ?? '';
 
     if (kind == 'transfer') {
-      // Use OTP from 2FA — for demo we use a hardcoded type
       context.read<PaymentBloc>().add(PaymentTransferRequested(
             amount: (flow['amount'] as num).toDouble(),
             description: flow['note'] as String? ?? 'Transfer',
-            otpCode: '000000', // In production: get from actual 2FA
-            otpType: AppConstants.otpTypeTotp,
+            otpCode: pin,
+            otpType: 'pin',
           ));
     } else if (kind == 'topup') {
       context.read<PaymentBloc>().add(PaymentTopupRequested(
             (flow['amount'] as num).toDouble(),
           ));
     } else if (kind == 'payment' || kind == 'deeplink') {
-      // QRIS payment → also uses transfer endpoint
       context.read<PaymentBloc>().add(PaymentTransferRequested(
             amount: (flow['amount'] as num).toDouble(),
-            description: flow['description'] as String? ?? 'Pembayaran QRIS',
-            otpCode: '000000',
-            otpType: AppConstants.otpTypeTotp,
+            description: flow['description'] as String? ?? 'Pembayaran',
+            otpCode: pin,
+            otpType: 'pin',
           ));
     }
   }

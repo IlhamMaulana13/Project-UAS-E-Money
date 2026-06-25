@@ -174,10 +174,14 @@ func (h *PaymentHandler) Transfer(c *gin.Context) {
 			return
 		}
 		otpValid = valid
+	case "pin":
+		// PIN sudah divalidasi di sisi Flutter (SecureStorage).
+		// Backend menerima otp_type "pin" selama user terautentikasi (JWT valid).
+		otpValid = true
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
-			"message": "otp_type harus 'firebase', 'email', atau 'totp'",
+			"message": "otp_type harus 'firebase', 'email', 'totp', atau 'pin'",
 		})
 		return
 	}

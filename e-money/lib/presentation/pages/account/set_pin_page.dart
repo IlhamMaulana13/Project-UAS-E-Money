@@ -60,9 +60,11 @@ class _SetPinPageState extends State<SetPinPage> {
       const SnackBar(
         content: Text('PIN berhasil disimpan'),
         backgroundColor: AppColors.green,
+        duration: Duration(seconds: 2),
       ),
     );
-    context.go('/akun');
+    // pop kembali ke halaman pemanggil (PIN page atau Account page)
+    context.pop();
   }
 
   @override
@@ -108,7 +110,7 @@ class _SetPinPageState extends State<SetPinPage> {
                             _firstPin = '';
                           });
                         } else {
-                          context.go('/akun');
+                          context.pop();
                         }
                       },
                     ),
