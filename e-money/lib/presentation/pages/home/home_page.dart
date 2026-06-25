@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       final pending = DeeplinkService().pendingPayment;
       if (pending != null) {
         DeeplinkService().consumePendingPayment();
-        context.push('/payment-deeplink', extra: pending);
+        context.push('/merchant', extra: pending);
       }
     });
   }

@@ -260,7 +260,7 @@ class _PinPageState extends State<PinPage> {
                 ),
               ] else ...[
                 Expanded(
-                  child: Padding(
+                  child: SingleChildScrollView(
                     padding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
                     child: Column(
                       children: [
@@ -290,7 +290,7 @@ class _PinPageState extends State<PinPage> {
                                 fontSize: 13.5, color: AppColors.slate500)),
                         const SizedBox(height: 20),
                         _buildDetail(),
-                        const Spacer(),
+                        const SizedBox(height: 24),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 80),
                           transform: _hasError

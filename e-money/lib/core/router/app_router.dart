@@ -188,8 +188,12 @@ class AppRouter {
             },
           ),
           GoRoute(
-              path: '/merchant',
-              builder: (_, __) => _withPayment(const MerchantCheckoutPage())),
+            path: '/merchant',
+            builder: (_, state) {
+              final deeplink = state.extra as DeeplinkPaymentData?;
+              return _withPayment(MerchantCheckoutPage(deeplink: deeplink));
+            },
+          ),
         ],
       );
 
