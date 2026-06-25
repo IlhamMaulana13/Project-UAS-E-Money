@@ -76,6 +76,14 @@ class SecureStorageDatasourceImpl implements SecureStorageDatasource {
 
   @override
   Future<void> clearAll() async {
-    await _storage.deleteAll();
+    // Hapus hanya data sesi — kPin sengaja dipertahankan (PIN adalah
+    // setelan keamanan perangkat, bukan kredensial sesi).
+    await Future.wait([
+      _storage.delete(key: AppConstants.kJwtToken),
+      _storage.delete(key: AppConstants.kUserData),
+      _storage.delete(key: AppConstants.k2faMethod),
+      _storage.delete(key: AppConstants.kFcmToken),
+      _storage.delete(key: AppConstants.kAuthVerified),
+    ]);
   }
 }
