@@ -123,25 +123,21 @@ class _MerchantCheckoutPageState extends State<MerchantCheckoutPage> {
               color: Colors.white.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Total Tagihan',
-                        style: TextStyle(
-                            fontSize: 11.5, color: Colors.white60)),
-                    Text(CurrencyFormatter.format(dl.amount),
-                        style: const TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                        )),
-                  ],
-                ),
-                if (dl.reference.isNotEmpty)
+                const Text('Total Tagihan',
+                    style: TextStyle(fontSize: 11.5, color: Colors.white60)),
+                const SizedBox(height: 2),
+                Text(CurrencyFormatter.format(dl.amount),
+                    style: const TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    )),
+                if (dl.reference.isNotEmpty) ...[
+                  const SizedBox(height: 6),
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 4),
@@ -150,6 +146,8 @@ class _MerchantCheckoutPageState extends State<MerchantCheckoutPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text('Ref: ${dl.reference}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontFamily: 'PlusJakartaSans',
                           fontSize: 11.5,
@@ -157,6 +155,7 @@ class _MerchantCheckoutPageState extends State<MerchantCheckoutPage> {
                           color: Colors.white,
                         )),
                   ),
+                ],
               ],
             ),
           ),
@@ -202,28 +201,36 @@ class _MerchantCheckoutPageState extends State<MerchantCheckoutPage> {
                         fontSize: 17,
                       )),
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.storefront_outlined,
-                          size: 14, color: Colors.white),
-                      const SizedBox(width: 6),
-                      Text(
-                        _deeplink?.merchantName ?? 'TokoBelanja',
-                        style: const TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 140),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.storefront_outlined,
+                            size: 14, color: Colors.white),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            _deeplink?.merchantName ?? 'TokoBelanja',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],

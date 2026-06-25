@@ -197,20 +197,25 @@ class _SuccessPageState extends State<SuccessPage> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 11),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(l[0],
-                                          style: const TextStyle(
-                                            fontFamily: 'PlusJakartaSans',
-                                            fontSize: 13.5,
-                                            color: AppColors.slate500,
-                                          )),
-                                      Flexible(
+                                      Expanded(
+                                        flex: 4,
+                                        child: Text(l[0],
+                                            style: const TextStyle(
+                                              fontFamily: 'PlusJakartaSans',
+                                              fontSize: 13.5,
+                                              color: AppColors.slate500,
+                                            )),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        flex: 6,
                                         child: Text(
                                           l[1],
                                           textAlign: TextAlign.right,
-                                          maxLines: 1,
+                                          maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                             fontFamily: 'PlusJakartaSans',
