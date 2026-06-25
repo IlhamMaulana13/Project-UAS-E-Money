@@ -99,9 +99,11 @@ class PaymentDeeplinkPage extends StatelessWidget {
                         Text(
                           paymentData.merchantName,
                           textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontFamily: 'PlusJakartaSans',
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.w800,
                             color: AppColors.ink,
                           ),
@@ -141,6 +143,26 @@ class PaymentDeeplinkPage extends StatelessWidget {
                             letterSpacing: -0.5,
                           ),
                         ),
+                        if (paymentData.reference.isNotEmpty) ...[
+                          const SizedBox(height: 10),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.18),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              'Ref: ${paymentData.reference}',
+                              style: const TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 12,
+                                color: Colors.white,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -160,13 +182,6 @@ class PaymentDeeplinkPage extends StatelessWidget {
                           label: 'Deskripsi',
                           value: paymentData.description,
                         ),
-                        if (paymentData.reference.isNotEmpty) ...[
-                          const Divider(height: 1, color: AppColors.line2),
-                          _Row(
-                            label: 'No. Referensi',
-                            value: paymentData.reference,
-                          ),
-                        ],
                         const Divider(height: 1, color: AppColors.line2),
                         _Row(
                           label: 'ID Merchant',
@@ -256,30 +271,28 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 11),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
             style: const TextStyle(
               fontFamily: 'PlusJakartaSans',
-              fontSize: 13.5,
-              color: AppColors.slate500,
+              fontSize: 12,
+              color: AppColors.slate400,
             ),
           ),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 13.5,
-                fontWeight: FontWeight.w700,
-                color: AppColors.ink,
-              ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontFamily: 'PlusJakartaSans',
+              fontSize: 13.5,
+              fontWeight: FontWeight.w700,
+              color: AppColors.ink,
             ),
           ),
         ],

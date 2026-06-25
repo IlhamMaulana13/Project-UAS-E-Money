@@ -179,6 +179,8 @@ class AppRouter {
                 amount: (extra['amount'] as num? ?? 0).toDouble(),
                 callbackUrl: extra['callback_url'] as String? ?? '',
                 merchantName: extra['merchant_name'] as String? ?? '',
+                reference: extra['reference'] as String? ?? '',
+                transactionId: extra['transaction_id'] as String? ?? '',
                 lines: (extra['lines'] as List<dynamic>?)
                         ?.map((l) => (l as List<dynamic>)
                             .map((e) => e.toString())

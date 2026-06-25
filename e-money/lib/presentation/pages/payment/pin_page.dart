@@ -28,11 +28,23 @@ class _PinPageState extends State<PinPage> {
   Future<void> _onComplete(String pin) async {
     final stored = await _storage.read(key: AppConstants.kPin);
     if (!mounted) return;
+
     if (stored == null) {
-      setState(() => _pin = '');
-      context.push('/set-pin');
+      // Belum ada PIN tersimpan — simpan otomatis dan lanjutkan
+      await _storage.write(key: AppConstants.kPin, value: pin);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('PIN berhasil disimpan'),
+          backgroundColor: AppColors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      setState(() => _busy = true);
+      _processPayment(pin);
       return;
     }
+
     if (pin != stored) {
       setState(() {
         _hasError = true;
@@ -43,6 +55,7 @@ class _PinPageState extends State<PinPage> {
       });
       return;
     }
+
     setState(() => _busy = true);
     _processPayment(pin);
   }
@@ -190,18 +203,21 @@ class _PinPageState extends State<PinPage> {
                 widget.flowData['merchant_name'] as String? ?? 'Merchant';
             final reference =
                 widget.flowData['reference'] as String? ?? '';
+            final transactionId = 'DKG${result.transactionId}';
             context.go('/success', extra: {
               'title': 'Pembayaran Berhasil',
               'subtitle': 'Transaksi ke $merchantName selesai',
               'amount': result.amount,
               'callback_url': callbackUrl,
               'merchant_name': merchantName,
+              'reference': reference,
+              'transaction_id': transactionId,
               'lines': [
                 ['Merchant', merchantName],
                 ['Jumlah', CurrencyFormatter.format(result.amount)],
                 ['Saldo setelah', CurrencyFormatter.format(result.balanceAfter)],
                 if (reference.isNotEmpty) ['No. Ref', reference],
-                ['ID Transaksi', 'DKG${result.transactionId}'],
+                ['ID Transaksi', transactionId],
               ],
             });
           } else {
