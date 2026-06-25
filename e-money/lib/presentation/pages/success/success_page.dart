@@ -244,9 +244,8 @@ class _SuccessPageState extends State<SuccessPage> {
                 children: [
                   if (hasCallback) ...[
                     AppButton(
-                      label: _returning
-                          ? 'Mengirim hasil...'
-                          : 'Kembali ke ${widget.merchantName}',
+                      label: 'Kembali ke ${widget.merchantName}',
+                      isLoading: _returning,
                       onPressed: _returning ? null : _returnToMerchant,
                     ),
                     const SizedBox(height: 10),
