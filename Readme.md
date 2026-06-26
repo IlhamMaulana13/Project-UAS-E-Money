@@ -195,13 +195,13 @@ go build -o app .
 
 | Login          | Register       | Verifikasi 2FA |
 | -------------- | -------------- | -------------- |
-| _(screenshot)_ | _(screenshot)_ | _(screenshot)_ |
+| _<img src="e-money/assets/screenshots/login.jpg" alt="Login" width="200"/>_ | _<img src="e-money/assets/screenshots/regis.jpg" alt="Register" width="200"/>_ | _<img src="e-money/assets/screenshots/2fa.jpg" alt="2fa" width="200"/>_ |
 
 ### Fitur Utama
 
 | Home           | Transfer       | Top Up         |
 | -------------- | -------------- | -------------- |
-| _<img src="e-money/assets/screenshots/home.jpg" alt="Home" width="200"/>_ | _(screenshot)_ | _(screenshot)_ |
+| _<img src="e-money/assets/screenshots/home.jpg" alt="Home" width="200"/>_ | _(screenshot)_ | _<img src="e-money/assets/screenshots/topup.jpg" alt="TopUp" width="200"/>_ |
 
 | PIN Keamanan   | Pembayaran Merchant | Halaman Sukses |
 | -------------- | ------------------- | -------------- |
@@ -211,9 +211,7 @@ go build -o app .
 
 | Riwayat Transaksi | Halaman Akun   | Ubah PIN       |
 | ----------------- | -------------- | -------------- |
-| _(screenshot)_    | _(screenshot)_ | _(screenshot)_ |
-
-> **Cara menambah screenshot:** Ganti teks `*(screenshot)*` dengan sintaks `![nama](assets/screenshots/nama-file.png)` lalu taruh file PNG di folder `assets/screenshots/`.
+| _<img src="e-money/assets/screenshots/riwayat.jpg" alt="Riwayat" width="200"/>_    | _<img src="e-money/assets/screenshots/akun.jpg" alt="Akun" width="200"/>_ | _<img src="e-money/assets/screenshots/buatpin.jpg" alt="PINChange" width="200"/>_ |
 
 ---
 
