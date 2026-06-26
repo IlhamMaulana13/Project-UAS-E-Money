@@ -205,7 +205,7 @@ go build -o app .
 
 | PIN Keamanan   | Pembayaran Merchant | Halaman Sukses |
 | -------------- | ------------------- | -------------- |
-| _<img src="e-money/assets/screenshots/inputpin.jpg" alt="PIN" width="200"/>_ | _(screenshot)_      | _(screenshot)_ |
+| _<img src="e-money/assets/screenshots/inputpin.jpg" alt="PIN" width="200"/>_ | _<img src="e-money/assets/screenshots/bayar.jpg" alt="BayarMerchant" width="200"/>_      | _(screenshot)_ |
 
 ### Riwayat & Akun
 
