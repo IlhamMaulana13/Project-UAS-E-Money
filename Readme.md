@@ -201,7 +201,7 @@ go build -o app .
 
 | Home           | Transfer       | Top Up         |
 | -------------- | -------------- | -------------- |
-| _![Home](e-money/assets/screenshots/home.jpg)_ | _(screenshot)_ | _(screenshot)_ |
+| _<img src="e-money/assets/screenshots/home.jpg" alt="Home" width="200"/>_ | _(screenshot)_ | _(screenshot)_ |
 
 | PIN Keamanan   | Pembayaran Merchant | Halaman Sukses |
 | -------------- | ------------------- | -------------- |
