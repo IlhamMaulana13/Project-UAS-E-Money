@@ -19,14 +19,28 @@ class MerchantCheckoutPage extends StatefulWidget {
 class _MerchantCheckoutPageState extends State<MerchantCheckoutPage> {
   DeeplinkPaymentData? _deeplink;
 
-  static const _items = [
+  // Dummy items dipakai hanya saat tidak ada deeplink
+  static const _dummyItems = [
     {'name': 'Kemeja Flanel Oversize', 'qty': 1, 'price': 159000.0},
     {'name': 'Tumbler Stainless 750ml', 'qty': 2, 'price': 45000.0},
   ];
   static const _ship = 12000.0;
-  static final _subtotal = _items.fold(
+  static final _subtotal = _dummyItems.fold(
       0.0, (s, i) => s + (i['price'] as double) * (i['qty'] as int));
   static final _cartTotal = _subtotal + _ship;
+
+  // Parse "Nx Nama Item, Nx Nama Item" dari description deeplink
+  List<Map<String, dynamic>> _parseDeeplinkItems() {
+    final desc = _deeplink!.description;
+    final parts = desc.split(', ');
+    return parts.where((p) => p.trim().isNotEmpty).map((part) {
+      final match = RegExp(r'^(\d+)x\s+(.+)$').firstMatch(part.trim());
+      if (match != null) {
+        return {'name': match.group(2)!, 'qty': int.parse(match.group(1)!)};
+      }
+      return {'name': part.trim(), 'qty': 1};
+    }).toList();
+  }
 
   @override
   void initState() {
@@ -117,8 +131,7 @@ class _MerchantCheckoutPageState extends State<MerchantCheckoutPage> {
           const SizedBox(height: 12),
           Container(
             width: double.infinity,
-            padding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
@@ -159,15 +172,269 @@ class _MerchantCheckoutPageState extends State<MerchantCheckoutPage> {
               ],
             ),
           ),
-          if (dl.description.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(dl.description,
-                style: const TextStyle(
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrderItems() {
+    if (_deeplink != null) {
+      // Tampilkan item dari deeplink (parsed dari description)
+      final dlItems = _parseDeeplinkItems();
+      final orderLabel = _deeplink!.reference.isNotEmpty
+          ? _deeplink!.reference
+          : 'Pesanan';
+
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: AppColors.shadowSoft,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(orderLabel,
+                  style: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.slate400,
+                  )),
+            ),
+            ...dlItems.asMap().entries.map((e) {
+              final i = e.key;
+              final item = e.value;
+              return Column(
+                children: [
+                  if (i > 0)
+                    const Divider(height: 1, color: AppColors.line2),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 11),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 46,
+                          height: 46,
+                          decoration: BoxDecoration(
+                            color: AppColors.primarySurface,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Center(
+                            child: Icon(Icons.checkroom_outlined,
+                                size: 22, color: AppColors.primary),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(item['name'] as String,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontFamily: 'PlusJakartaSans',
+                                    fontSize: 13.5,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.ink,
+                                  )),
+                              Text('Qty: ${item['qty']}',
+                                  style: const TextStyle(
+                                      fontSize: 12.5,
+                                      color: AppColors.slate400)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ],
+        ),
+      );
+    }
+
+    // Dummy items saat tidak ada deeplink
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: AppColors.shadowSoft,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Text('Pesanan #TB-2026-88142',
+                style: TextStyle(
                   fontFamily: 'PlusJakartaSans',
                   fontSize: 12.5,
-                  color: Colors.white70,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.slate400,
                 )),
+          ),
+          ..._dummyItems.asMap().entries.map((e) {
+            final i = e.key;
+            final item = e.value;
+            return Column(
+              children: [
+                if (i > 0)
+                  const Divider(height: 1, color: AppColors.line2),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 11),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 46,
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF1E9),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                            child: Icon(Icons.shopping_bag_outlined,
+                                size: 22, color: _orange)),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(item['name'] as String,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.ink,
+                                )),
+                            Text(
+                                '${item['qty']} × ${CurrencyFormatter.format(item['price'] as double)}',
+                                style: const TextStyle(
+                                    fontSize: 12.5,
+                                    color: AppColors.slate400)),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        CurrencyFormatter.format(
+                            (item['price'] as double) *
+                                (item['qty'] as int)),
+                        style: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.ink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTotals(double payAmount) {
+    if (_deeplink != null) {
+      // Total sesuai amount dari ecommerce, tanpa ongkos kirim dummy
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: AppColors.shadowSoft,
+        ),
+        child: Column(
+          children: [
+            _TotalLine(
+              label: 'Subtotal',
+              value: CurrencyFormatter.format(payAmount),
+            ),
+            const Divider(height: 1, color: AppColors.line2),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Total Tagihan',
+                      style: TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 15.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.slate600,
+                      )),
+                  Text(
+                    CurrencyFormatter.format(payAmount),
+                    style: const TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 15.5,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
+        ),
+      );
+    }
+
+    // Totals dummy saat tidak ada deeplink
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: AppColors.shadowSoft,
+      ),
+      child: Column(
+        children: [
+          _TotalLine(
+              label: 'Subtotal',
+              value: CurrencyFormatter.format(_subtotal)),
+          const Divider(height: 1, color: AppColors.line2),
+          _TotalLine(
+              label: 'Ongkos kirim',
+              value: CurrencyFormatter.format(_ship)),
+          const Divider(height: 1, color: AppColors.line2),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Total',
+                    style: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 15.5,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.slate600,
+                    )),
+                Text(
+                  CurrencyFormatter.format(payAmount),
+                  style: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 15.5,
+                    fontWeight: FontWeight.w800,
+                    color: _orange,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -242,99 +509,7 @@ class _MerchantCheckoutPageState extends State<MerchantCheckoutPage> {
               child: Column(
                 children: [
                   if (_deeplink != null) _buildPendingBanner(),
-                  // Order items
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: AppColors.shadowSoft,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 6),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: Text('Pesanan #TB-2026-88142',
-                              style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontSize: 12.5,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.slate400,
-                              )),
-                        ),
-                        ..._items.asMap().entries.map((e) {
-                          final i = e.key;
-                          final item = e.value;
-                          return Column(
-                            children: [
-                              if (i > 0)
-                                const Divider(
-                                    height: 1, color: AppColors.line2),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 11),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 46,
-                                      height: 46,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFFF1E9),
-                                        borderRadius:
-                                            BorderRadius.circular(12),
-                                      ),
-                                      child: const Center(
-                                          child: Icon(
-                                              Icons.shopping_bag_outlined,
-                                              size: 22,
-                                              color: _orange)),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(item['name'] as String,
-                                              maxLines: 1,
-                                              overflow:
-                                                  TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontFamily: 'PlusJakartaSans',
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w700,
-                                                color: AppColors.ink,
-                                              )),
-                                          Text(
-                                              '${item['qty']} × ${CurrencyFormatter.format(item['price'] as double)}',
-                                              style: const TextStyle(
-                                                  fontSize: 12.5,
-                                                  color: AppColors.slate400)),
-                                        ],
-                                      ),
-                                    ),
-                                    Text(
-                                      CurrencyFormatter.format(
-                                          (item['price'] as double) *
-                                              (item['qty'] as int)),
-                                      style: const TextStyle(
-                                        fontFamily: 'PlusJakartaSans',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w800,
-                                        color: AppColors.ink,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
+                  _buildOrderItems(),
                   const SizedBox(height: 14),
                   // Payment method
                   const Padding(
@@ -387,54 +562,7 @@ class _MerchantCheckoutPageState extends State<MerchantCheckoutPage> {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  // Totals
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: AppColors.shadowSoft,
-                    ),
-                    child: Column(
-                      children: [
-                        _TotalLine(
-                            label: 'Subtotal',
-                            value: CurrencyFormatter.format(_subtotal)),
-                        const Divider(height: 1, color: AppColors.line2),
-                        _TotalLine(
-                            label: 'Ongkos kirim',
-                            value: CurrencyFormatter.format(_ship)),
-                        const Divider(height: 1, color: AppColors.line2),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Total',
-                                  style: TextStyle(
-                                    fontFamily: 'PlusJakartaSans',
-                                    fontSize: 15.5,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.slate600,
-                                  )),
-                              Text(
-                                CurrencyFormatter.format(payAmount),
-                                style: TextStyle(
-                                  fontFamily: 'PlusJakartaSans',
-                                  fontSize: 15.5,
-                                  fontWeight: FontWeight.w800,
-                                  color: _deeplink != null
-                                      ? AppColors.primary
-                                      : _orange,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _buildTotals(payAmount),
                 ],
               ),
             ),

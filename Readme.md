@@ -8,7 +8,7 @@
 
 |           |                             |
 | --------- | --------------------------- |
-| **Nama**  | MHAMMAD ILHAM MAULANA       |
+| **Nama**  | MUHAMMAD ILHAM MAULANA       |
 | **NIM**   | 1123150141                  |
 | **Kelas** | TI 23 SH SE                 |
 | **Email** | mhmmad13ilhammlna@gmail.com |
@@ -205,7 +205,7 @@ go build -o app .
 
 | PIN Keamanan   | Pembayaran Merchant | Halaman Sukses |
 | -------------- | ------------------- | -------------- |
-| _(screenshot)_ | _(screenshot)_      | _(screenshot)_ |
+| _<img src="e-money/assets/screenshots/inputpin.jpg" alt="PIN" width="200"/>_ | _(screenshot)_      | _(screenshot)_ |
 
 ### Riwayat & Akun
 
@@ -235,4 +235,4 @@ go build -o app .
 
 ---
 
-_Institut Teknologi dan Bisnis Bina Sarana Global_
+*Semester 6 · Institut Teknologi dan Bisnis Bina Sarana Global · 2025/2026*
