@@ -6,12 +6,12 @@
 
 ## Identitas Mahasiswa
 
-|           |                       |
-| --------- | --------------------- |
-| **Nama**  | MHAMMAD ILHAM MAULANA |
-| **NIM**   | 1123150141            |
-| **Kelas** | TI 23 SH SE           |
-| **Email** | umarcp24@gmail.com    |
+|           |                             |
+| --------- | --------------------------- |
+| **Nama**  | MHAMMAD ILHAM MAULANA       |
+| **NIM**   | 1123150141                  |
+| **Kelas** | TI 23 SH SE                 |
+| **Email** | mhmmad13ilhammlna@gmail.com |
 
 ---
 
@@ -201,7 +201,7 @@ go build -o app .
 
 | Home           | Transfer       | Top Up         |
 | -------------- | -------------- | -------------- |
-| _(screenshot)_ | _(screenshot)_ | _(screenshot)_ |
+| _[Home](assets/screenshots/home.jpg)_ | _(screenshot)_ | _(screenshot)_ |
 
 | PIN Keamanan   | Pembayaran Merchant | Halaman Sukses |
 | -------------- | ------------------- | -------------- |
