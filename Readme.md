@@ -219,7 +219,7 @@ go build -o app .
 
 > **Video demo & presentasi aplikasi:**
 
-🎬 **[Tonton di YouTube — ](https://youtu.be/DfQiKn82G3s)**
+🎬 **[Tonton di YouTube — [UAS Mobile] Dompet Kampus Global — Aplikasi E-Money & E-Commerce dengan Deep Link + 2FA](https://youtu.be/DfQiKn82G3s)**
 
 ---
 
