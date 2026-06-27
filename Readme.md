@@ -205,7 +205,7 @@ go build -o app .
 
 | PIN Keamanan   | Pembayaran Merchant | Halaman Sukses |
 | -------------- | ------------------- | -------------- |
-| _<img src="e-money/assets/screenshots/inputpin.jpg" alt="PIN" width="200"/>_ | _<img src="e-money/assets/screenshots/bayar.jpg" alt="BayarMerchant" width="200"/>_      | _<img src="e-money/assets/screenshots/sukses.jpg" alt="Sukses" width="200"/>_ |
+| _<img src="e-money/assets/screenshots/inputpin.jpg" alt="PIN" width="200"/>_ | _<img src="e-money/assets/screenshots/bayar.jpg" alt="BayarMerchant" width="200"/>_ | _<img src="e-money/assets/screenshots/sukses.jpg" alt="Sukses" width="200"/>_ |
 
 ### Riwayat & Akun
 
@@ -222,6 +222,218 @@ go build -o app .
 🎬 **[Tonton di YouTube — (link akan diisi)](...)**
 
 <!-- Ganti (...) dengan URL YouTube setelah video diunggah -->
+
+---
+
+## Implementasi Deep Link
+
+Deep Link digunakan agar aplikasi **AppsMarketplace (E-Commerce)** bisa meminta pembayaran langsung ke **Dompet Kampus (E-Money)** tanpa user perlu berpindah secara manual.
+
+### Alur Lengkap Deep Link
+
+```
+[AppsMarketplace]                        [Dompet Kampus Global]
+      │                                           │
+      │  1. User klik "Bayar via E-Money"         │
+      │──────────────────────────────────────────▶│
+      │  dompetkampus://pay?merchant_id=X          │
+      │  &merchant_name=Y&amount=Z                 │
+      │  &description=D&reference=R               │
+      │  &callback=appsmarketplace://result        │
+      │                                           │
+      │                          2. DeeplinkService._handleUri()
+      │                          3. Tampil MerchantCheckoutPage
+      │                          4. User input PIN → PaymentBloc
+      │                          5. Backend proses transfer
+      │                           │
+      │  6. Callback: appsmarketplace://payment-result
+      │◀──────────────────────────────────────────│
+      │  ?status=success&amount=Z                  │
+      │  &reference=R&transaction_id=DKGxxx        │
+```
+
+### File Kunci Deep Link
+
+| File | Peran |
+|------|-------|
+| `lib/core/services/deeplink_service.dart` | Menangkap URI masuk, parse parameter, buffer cold-start |
+| `lib/main.dart` | `DeeplinkService().init()` dipanggil sebelum `runApp()` |
+| `lib/presentation/pages/home/home_page.dart` | Menerima event deeplink, push ke `/merchant` |
+| `lib/presentation/pages/merchant/merchant_checkout_page.dart` | Tampilkan detail pesanan dari deeplink |
+| `android/app/src/main/AndroidManifest.xml` | Intent filter scheme `dompetkampus` |
+
+### Skema URL Deep Link
+
+```
+# Dari E-Commerce → E-Money (permintaan bayar)
+dompetkampus://pay
+  ?merchant_id=JERSEY_STORE_01
+  &merchant_name=Toko%20Jersey
+  &amount=2640000
+  &description=1x%20Jersey%20Portugal
+  &reference=INV-1782458232207
+  &callback=appsmarketplace://payment-result
+
+# Dari E-Money → E-Commerce (hasil transaksi)
+appsmarketplace://payment-result
+  ?status=success
+  &amount=2640000
+  &reference=INV-1782458232207
+  &transaction_id=DKG22xxxxx
+```
+
+### Potongan Kode Inti
+
+```dart
+// lib/core/services/deeplink_service.dart
+void _handleUri(Uri uri) {
+  if (uri.scheme == 'dompetkampus' && uri.host == 'pay') {
+    final paymentData = DeeplinkPaymentData(
+      merchantId:   uri.queryParameters['merchant_id'] ?? '',
+      merchantName: uri.queryParameters['merchant_name'] ?? '',
+      amount:       double.tryParse(uri.queryParameters['amount'] ?? '0') ?? 0,
+      description:  uri.queryParameters['description'] ?? '',
+      reference:    uri.queryParameters['reference'] ?? '',
+      callbackUrl:  uri.queryParameters['callback'] ?? '',
+    );
+    _pendingPayment = paymentData;         // buffer cold-start
+    _paymentDataController.add(paymentData); // warm-start stream
+  }
+}
+```
+
+---
+
+## Implementasi Two-Factor Authentication (2FA)
+
+Aplikasi mendukung **tiga metode 2FA** yang bisa dipilih pengguna saat setup akun.
+
+### Metode 2FA yang Tersedia
+
+| Metode | Cara Kerja | File |
+|--------|-----------|------|
+| **SMTP (Email OTP)** | Backend kirim kode 6 digit ke email user via SMTP | `lib/presentation/pages/auth/twofa_smtp_page.dart` |
+| **TOTP (Google Authenticator)** | QR code di-scan ke Google Authenticator, kode berputar tiap 30 detik | `lib/presentation/pages/auth/twofa_totp_page.dart` |
+| **Push Notification** | Firebase Cloud Messaging (FCM) kirim notifikasi approve/deny | `lib/presentation/pages/auth/twofa_notif_page.dart` |
+
+### Alur 2FA saat Login
+
+```
+User input email & password
+         │
+         ▼
+  Backend verifikasi kredensial
+         │
+    ┌────┴────────────────────────────────┐
+    │   Metode 2FA yang terdaftar?        │
+    └────┬─────────┬──────────────────────┘
+         │         │              │
+       SMTP      TOTP           FCM Notif
+         │         │              │
+   Kode email  Kode Authenticator  Approve di HP
+         │         │              │
+    └────┴─────────┴──────────────┘
+                   │
+         OTP dikirim ke backend (/v1/auth/verify-otp)
+                   │
+         Backend validasi → JWT Token diterbitkan
+                   │
+              User masuk aplikasi
+```
+
+### Potongan Kode Inti
+
+```dart
+// lib/presentation/blocs/auth/otp_bloc.dart
+// Kirim kode OTP ke backend untuk diverifikasi
+void _onVerifyOtp(OtpVerifyRequested event, Emitter<OtpState> emit) async {
+  emit(OtpLoading());
+  final result = await verifyOtp(VerifyOtpParams(
+    email:   event.email,
+    otpCode: event.code,
+    otpType: event.otpType, // 'smtp' | 'totp' | 'notification'
+  ));
+  result.fold(
+    (failure) => emit(OtpFailure(failure.message)),
+    (token)   => emit(OtpSuccess(token)),
+  );
+}
+```
+
+```go
+// backend/handlers/auth.go — validasi OTP di server
+switch req.OtpType {
+case "smtp":
+    otpValid = validateSmtpOtp(req.Email, req.OtpCode)
+case "totp":
+    otpValid = totp.Validate(req.OtpCode, user.TotpSecret)
+case "notification":
+    otpValid = checkNotificationApproval(user.ID)
+case "pin":
+    otpValid = true  // PIN divalidasi di sisi Flutter (SecureStorage)
+}
+```
+
+---
+
+## Penjelasan Kode — Highlight Implementasi
+
+### 1. Clean Architecture: Alur Data Payment
+
+```
+PinPage._processPayment(pin)
+    │
+    ▼
+PaymentBloc.add(PaymentTransferRequested)          ← Presentation
+    │
+    ▼
+PaymentTransferUseCase.call(params)                ← Domain
+    │
+    ▼
+PaymentRepositoryImpl.transfer(amount, otp)        ← Data
+    │
+    ▼
+PaymentRemoteDataSource.transfer()  ─── Dio HTTP ──▶ Backend /v1/payment/transfer
+    │
+    ▼
+PaymentBloc → PaymentTransferSuccess
+    │
+    ▼
+PinPage (BlocListener) → context.go('/success', extra: {...})
+```
+
+### 2. PIN Security — Penyimpanan Lokal Aman
+
+PIN tidak pernah dikirim ke server dalam bentuk tersimpan. Mekanismenya:
+
+```dart
+// Simpan PIN (hanya saat user pertama kali buat)
+await FlutterSecureStorage().write(key: 'security_pin', value: pin);
+
+// Validasi PIN saat transaksi (lokal, tidak ke server)
+final stored = await FlutterSecureStorage().read(key: 'security_pin');
+if (pin != stored) { /* shake + error */ return; }
+
+// Kirim ke backend hanya otp_type: 'pin' (backend percaya JWT)
+PaymentTransferRequested(otpCode: pin, otpType: 'pin')
+```
+
+### 3. Logout Aman — PIN Tidak Terhapus
+
+Masalah umum: logout menghapus semua data termasuk PIN. Solusi yang diterapkan:
+
+```dart
+// lib/data/datasources/local/secure_storage_datasource.dart
+Future<void> clearAll() async {
+  await Future.wait([
+    _storage.delete(key: AppConstants.kJwtToken),
+    _storage.delete(key: AppConstants.kUserData),
+    _storage.delete(key: AppConstants.k2faMethod),
+    _storage.delete(key: AppConstants.kFcmToken),
+  ]);
+  // AppConstants.kPin SENGAJA tidak dihapus → PIN tetap ada setelah logout
+}
+```
 
 ---
 

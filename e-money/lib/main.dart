@@ -1,5 +1,7 @@
 import 'package:dompet_kampus_global/core/services/deeplink_service.dart';
+import 'package:dompet_kampus_global/core/services/fcm_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,9 @@ void main() async {
 
   Bloc.observer = const AppBlocObserver();
 
+  // Daftarkan background handler SEBELUM Firebase.initializeApp
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   // 1. Inisialisasi Service Deeplink sebelum aplikasi berjalan
   await DeeplinkService().init();
 
@@ -23,6 +28,9 @@ void main() async {
 
   // Initialize dependency injection
   await di.init();
+
+  // Inisialisasi FCM (request permission + setup handlers)
+  await FcmService().init();
 
   // Set preferred orientations
   await SystemChrome.setPreferredOrientations([

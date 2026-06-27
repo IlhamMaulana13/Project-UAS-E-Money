@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../../core/services/fcm_service.dart';
 import '../../../domain/entities/user_entity.dart';
 import '../../../domain/usecases/auth/verify_firebase_token_usecase.dart';
 import '../../../domain/usecases/auth/logout_usecase.dart';
@@ -103,6 +104,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
     emit(AuthAuthenticated(user));
+
+    // Upload FCM token ke backend (non-blocking)
+    FcmService().uploadToken((token) => _authRepo.updateFcmToken(token));
   }
 
   Future<void> _onLoginWithFirebase(AuthLoginWithFirebase event, Emitter<AuthState> emit) async {
