@@ -219,9 +219,7 @@ go build -o app .
 
 > **Video demo & presentasi aplikasi:**
 
-🎬 **[Tonton di YouTube — (link akan diisi)](...)**
-
-<!-- Ganti (...) dengan URL YouTube setelah video diunggah -->
+🎬 **[Tonton di YouTube — ](https://youtu.be/DfQiKn82G3s)**
 
 ---
 
