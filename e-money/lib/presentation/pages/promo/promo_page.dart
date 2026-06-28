@@ -9,10 +9,10 @@ class PromoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final promos = [
-      {'t': 'Cashback 30% di Kantin Kampus', 'd': 'Maks. Rp10.000 · s.d. 30 Jun', 'tone': 'red', 'icon': Icons.restaurant_outlined},
-      {'t': 'Gratis biaya transfer antarbank', 'd': 'Setiap Jumat · semua bank', 'tone': 'green', 'icon': Icons.send_rounded},
-      {'t': 'Diskon UKT 0% cicilan 6 bulan', 'd': 'Khusus pengguna baru', 'tone': 'violet', 'icon': Icons.receipt_long_outlined},
-      {'t': 'Bonus 5.000 poin top up pertama', 'd': 'Min. Rp50.000', 'tone': 'amber', 'icon': Icons.star_outline_rounded},
+      {'t': 'Gratis admin bayar Zakat & Infaq', 'd': 'Berlaku sepanjang tahun', 'tone': 'green', 'icon': Icons.volunteer_activism_outlined},
+      {'t': 'Cashback 10% investasi syariah', 'd': 'Maks. Rp25.000 · min. Rp100.000', 'tone': 'violet', 'icon': Icons.trending_up_rounded},
+      {'t': 'Gratis biaya transfer ke rekening masjid', 'd': 'Setiap hari · semua bank', 'tone': 'blue', 'icon': Icons.send_rounded},
+      {'t': 'Bonus 10.000 poin wakaf pertama', 'd': 'Min. Rp50.000', 'tone': 'amber', 'icon': Icons.star_outline_rounded},
     ];
 
     return Scaffold(
@@ -25,7 +25,7 @@ class PromoPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text('Promo & Reward',
+                Text('Promo & Berkah',
                     style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       fontSize: 22,
@@ -66,9 +66,9 @@ class PromoPage extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
-                          AppBadge(label: 'SPESIAL MAHASISWA', tone: 'amber'),
+                          AppBadge(label: "SPESIAL SYARI'AH", tone: 'amber'),
                           SizedBox(height: 12),
-                          Text('Bayar kuliah,\ndapat cashback 💸',
+                          Text('Bayar zakat,\ndapat pahala berlipat ✨',
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 22,
@@ -77,7 +77,7 @@ class PromoPage extends StatelessWidget {
                                 height: 1.2,
                               )),
                           SizedBox(height: 8),
-                          Text('Kumpulkan poin tiap transaksi.',
+                          Text('Setiap sedekah membawa keberkahan.',
                               style: TextStyle(
                                 fontFamily: 'PlusJakartaSans',
                                 fontSize: 13.5,

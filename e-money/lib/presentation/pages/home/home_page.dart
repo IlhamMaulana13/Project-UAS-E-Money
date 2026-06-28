@@ -205,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(width: 7),
-                  const Text('Saldo DKG',
+                  const Text("Saldo Syari'ah",
                       style: TextStyle(
                         fontFamily: 'PlusJakartaSans',
                         fontSize: 13,
@@ -323,7 +323,7 @@ class _HomePageState extends State<HomePage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text('Poin Kampus',
+                    Text('Poin Berkah',
                         style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 11.5,
@@ -358,7 +358,7 @@ class _HomePageState extends State<HomePage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text('KTM Digital',
+                    Text("Kartu Syari'ah",
                         style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 11.5,
@@ -382,13 +382,13 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildFeatureGrid() {
     final features = [
+      {'icon': Icons.volunteer_activism_outlined, 'label': 'Zakat', 'tone': 'green'},
+      {'icon': Icons.savings_outlined, 'label': 'Infaq', 'tone': 'amber'},
+      {'icon': Icons.real_estate_agent_outlined, 'label': 'Wakaf', 'tone': 'violet'},
       {'icon': Icons.smartphone_outlined, 'label': 'Pulsa', 'tone': 'blue'},
+      {'icon': Icons.trending_up_rounded, 'label': 'Investasi', 'tone': 'green'},
+      {'icon': Icons.account_balance_outlined, 'label': 'Masjid', 'tone': 'red'},
       {'icon': Icons.bolt_outlined, 'label': 'PLN', 'tone': 'amber'},
-      {'icon': Icons.restaurant_outlined, 'label': 'Kantin', 'tone': 'red'},
-      {'icon': Icons.receipt_long_outlined, 'label': 'UKT', 'tone': 'violet'},
-      {'icon': Icons.wifi_rounded, 'label': 'Paket Data', 'tone': 'green'},
-      {'icon': Icons.card_giftcard_rounded, 'label': 'Voucher', 'tone': 'red'},
-      {'icon': Icons.favorite_outline_rounded, 'label': 'Donasi', 'tone': 'amber'},
       {'icon': Icons.more_horiz_rounded, 'label': 'Lainnya', 'tone': 'slate'},
     ];
     return Container(
@@ -452,7 +452,7 @@ class _HomePageState extends State<HomePage> {
                 height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFF5B9BFF).withValues(alpha: 0.18),
+                  color: const Color(0xFF22B874).withValues(alpha: 0.18),
                 ),
               ),
             ),
@@ -465,14 +465,14 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.white.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: const Icon(Icons.link_rounded, size: 24, color: Color(0xFF5B9BFF)),
+                  child: const Icon(Icons.verified_outlined, size: 24, color: Color(0xFF22B874)),
                 ),
                 const SizedBox(width: 13),
                 const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Coba bayar dari toko online',
+                      Text('Bayar aman & berkah',
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 14.5,
@@ -480,7 +480,7 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           )),
                       SizedBox(height: 2),
-                      Text('Simulasi checkout e-commerce → bayar via DKG',
+                      Text("Transaksi sesuai prinsip syari'ah, mudah & terpercaya",
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 12.5,
