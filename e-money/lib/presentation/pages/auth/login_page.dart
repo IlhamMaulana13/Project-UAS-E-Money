@@ -145,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                           )),
                       const SizedBox(height: 6),
                       const Text(
-                          'Selamat datang Dompet Kampus! Silakan masuk untuk melanjutkan.',
+                          "Selamat datang di Dompet Syari'ah! Silakan masuk untuk melanjutkan.",
                           style: TextStyle(
                               fontSize: 14.5, color: AppColors.slate500)),
                       const SizedBox(height: 24),

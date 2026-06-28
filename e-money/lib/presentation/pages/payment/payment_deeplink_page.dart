@@ -210,7 +210,7 @@ class PaymentDeeplinkPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Dompet Kampus Global',
+                                "Dompet Syari'ah",
                                 style: TextStyle(
                                   fontFamily: 'PlusJakartaSans',
                                   fontSize: 14.5,

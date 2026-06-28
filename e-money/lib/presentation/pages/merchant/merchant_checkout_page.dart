@@ -542,7 +542,7 @@ class _MerchantCheckoutPageState extends State<MerchantCheckoutPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Dompet Kampus Global',
+                              Text("Dompet Syari'ah",
                                   style: TextStyle(
                                     fontFamily: 'PlusJakartaSans',
                                     fontSize: 14.5,
