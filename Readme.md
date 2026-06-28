@@ -1,4 +1,4 @@
-# Dompet Kampus Global — Aplikasi E-Money Mobile
+# Dompet Syari'ah — Aplikasi E-Money Mobile
 
 > Ujian Akhir Semester · Aplikasi Mobile Lanjutan
 
@@ -17,7 +17,7 @@
 
 ## Deskripsi Aplikasi
 
-**Dompet Kampus Global** adalah aplikasi e-money berbasis mobile yang dirancang khusus untuk ekosistem kampus. Aplikasi ini memungkinkan mahasiswa melakukan transaksi keuangan digital secara cepat, aman, dan efisien — mulai dari top up saldo, transfer antar pengguna, hingga pembayaran ke merchant menggunakan sistem deep link lintas aplikasi.
+**Dompet Syari'ah** adalah aplikasi e-money berbasis mobile yang dirancang khusus untuk ekosistem kampus. Aplikasi ini memungkinkan mahasiswa melakukan transaksi keuangan digital secara cepat, aman, dan efisien — mulai dari top up saldo, transfer antar pengguna, hingga pembayaran ke merchant menggunakan sistem deep link lintas aplikasi.
 
 ### Fitur Utama
 
@@ -25,7 +25,7 @@
 | ----------------------- | ---------------------------------------------------------------------------------- |
 | **Autentikasi**         | Register, login, verifikasi email, dan 2FA (SMTP / TOTP / Notifikasi)              |
 | **Top Up Saldo**        | Isi saldo dompet digital secara instan                                             |
-| **Transfer**            | Kirim uang ke sesama pengguna Dompet Kampus                                        |
+| **Transfer**            | Kirim uang ke sesama pengguna Dompet Syari'ah                                        |
 | **Pembayaran Merchant** | Bayar ke merchant via deep link (`dompetkampus://pay?...`) dari aplikasi eksternal |
 | **Riwayat Transaksi**   | Lihat seluruh histori transaksi dengan detail lengkap                              |
 | **PIN Keamanan**        | Setiap transaksi dikonfirmasi menggunakan PIN 6 digit yang tersimpan aman          |
@@ -209,7 +209,7 @@ go build -o app .
 
 ### Riwayat & Akun
 
-| Riwayat Transaksi                                                               | Halaman Akun                                                              | Ubah PIN                                                                          |
+| Riwayat Transaksi                                                               | Halaman Promo & Berkah                                                             | Ubah PIN                                                                          |
 | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | _<img src="e-money/assets/screenshots/riwayat.jpg" alt="Riwayat" width="200"/>_ | _<img src="e-money/assets/screenshots/akun.jpg" alt="Akun" width="200"/>_ | _<img src="e-money/assets/screenshots/buatpin.jpg" alt="PINChange" width="200"/>_ |
 
@@ -219,18 +219,18 @@ go build -o app .
 
 > **Video demo & presentasi aplikasi:**
 
-🎬 **[Tonton di YouTube — [UAS Mobile] Dompet Kampus Global — Aplikasi E-Money & E-Commerce dengan Deep Link + 2FA](https://youtu.be/DfQiKn82G3s)**
+🎬 **[Tonton di YouTube — [UAS Mobile] Dompet Syari'ah — Aplikasi E-Money & E-Commerce dengan Deep Link + 2FA](https://youtu.be/DfQiKn82G3s)**
 
 ---
 
 ## Implementasi Deep Link
 
-Deep Link digunakan agar aplikasi **AppsMarketplace (E-Commerce)** bisa meminta pembayaran langsung ke **Dompet Kampus (E-Money)** tanpa user perlu berpindah secara manual.
+Deep Link digunakan agar aplikasi **AppsMarketplace (E-Commerce)** bisa meminta pembayaran langsung ke **Dompet Syari'ah (E-Money)** tanpa user perlu berpindah secara manual.
 
 ### Alur Lengkap Deep Link
 
 ```
-[AppsMarketplace]                        [Dompet Kampus Global]
+[AppsMarketplace]                        [Dompet Syari'ah]
       │                                           │
       │  1. User klik "Bayar via E-Money"         │
       │──────────────────────────────────────────▶│

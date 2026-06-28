@@ -49,7 +49,7 @@ class DeeplinkService {
   }
 
   void _handleUri(Uri uri) {
-    if (uri.scheme == 'dompetkampus' && uri.host == 'pay') {
+    if (uri.scheme == 'dompetsyariah' && uri.host == 'pay') {
       final params = uri.queryParameters;
 
       final merchantId = params['merchant_id'] ?? '';

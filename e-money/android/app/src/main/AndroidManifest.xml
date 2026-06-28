@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <application
-        android:label="dompet_kampus_global"
+        android:label="Dompet Syari'ah"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -29,7 +29,7 @@
                 <action android:name="android.intent.action.VIEW"/>    
                 <category android:name="android.intent.category.DEFAULT"/>    
                 <category android:name="android.intent.category.BROWSABLE"/>    
-                <data android:scheme="dompetkampus" android:host="pay"/>    
+                <data android:scheme="dompetsyariah" android:host="pay"/>
             </intent-filter>
         </activity>
 
