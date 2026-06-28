@@ -1,6 +1,6 @@
 # Dompet Kampus Global — Aplikasi E-Money Mobile
 
-> Tugas Akhir Semester 6 · Aplikasi Mobile Lanjutan
+> Ujian Akhir Semester · Aplikasi Mobile Lanjutan
 
 ---
 
@@ -8,7 +8,7 @@
 
 |           |                             |
 | --------- | --------------------------- |
-| **Nama**  | MUHAMMAD ILHAM MAULANA       |
+| **Nama**  | MUHAMMAD ILHAM MAULANA      |
 | **NIM**   | 1123150141                  |
 | **Kelas** | TI 23 SH SE                 |
 | **Email** | mhmmad13ilhammlna@gmail.com |
@@ -193,25 +193,25 @@ go build -o app .
 
 ### Autentikasi & Onboarding
 
-| Login          | Register       | Verifikasi 2FA |
-| -------------- | -------------- | -------------- |
+| Login                                                                       | Register                                                                       | Verifikasi 2FA                                                          |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
 | _<img src="e-money/assets/screenshots/login.jpg" alt="Login" width="200"/>_ | _<img src="e-money/assets/screenshots/regis.jpg" alt="Register" width="200"/>_ | _<img src="e-money/assets/screenshots/2fa.jpg" alt="2fa" width="200"/>_ |
 
 ### Fitur Utama
 
-| Home           | Transfer       | Top Up         |
-| -------------- | -------------- | -------------- |
+| Home                                                                      | Transfer                                                                          | Top Up                                                                      |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | _<img src="e-money/assets/screenshots/home.jpg" alt="Home" width="200"/>_ | _<img src="e-money/assets/screenshots/transfer.jpg" alt="Transfer" width="200"/>_ | _<img src="e-money/assets/screenshots/topup.jpg" alt="TopUp" width="200"/>_ |
 
-| PIN Keamanan   | Pembayaran Merchant | Halaman Sukses |
-| -------------- | ------------------- | -------------- |
+| PIN Keamanan                                                                 | Pembayaran Merchant                                                                 | Halaman Sukses                                                                |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | _<img src="e-money/assets/screenshots/inputpin.jpg" alt="PIN" width="200"/>_ | _<img src="e-money/assets/screenshots/bayar.jpg" alt="BayarMerchant" width="200"/>_ | _<img src="e-money/assets/screenshots/sukses.jpg" alt="Sukses" width="200"/>_ |
 
 ### Riwayat & Akun
 
-| Riwayat Transaksi | Halaman Akun   | Ubah PIN       |
-| ----------------- | -------------- | -------------- |
-| _<img src="e-money/assets/screenshots/riwayat.jpg" alt="Riwayat" width="200"/>_    | _<img src="e-money/assets/screenshots/akun.jpg" alt="Akun" width="200"/>_ | _<img src="e-money/assets/screenshots/buatpin.jpg" alt="PINChange" width="200"/>_ |
+| Riwayat Transaksi                                                               | Halaman Akun                                                              | Ubah PIN                                                                          |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| _<img src="e-money/assets/screenshots/riwayat.jpg" alt="Riwayat" width="200"/>_ | _<img src="e-money/assets/screenshots/akun.jpg" alt="Akun" width="200"/>_ | _<img src="e-money/assets/screenshots/buatpin.jpg" alt="PINChange" width="200"/>_ |
 
 ---
 
@@ -252,13 +252,13 @@ Deep Link digunakan agar aplikasi **AppsMarketplace (E-Commerce)** bisa meminta 
 
 ### File Kunci Deep Link
 
-| File | Peran |
-|------|-------|
-| `lib/core/services/deeplink_service.dart` | Menangkap URI masuk, parse parameter, buffer cold-start |
-| `lib/main.dart` | `DeeplinkService().init()` dipanggil sebelum `runApp()` |
-| `lib/presentation/pages/home/home_page.dart` | Menerima event deeplink, push ke `/merchant` |
-| `lib/presentation/pages/merchant/merchant_checkout_page.dart` | Tampilkan detail pesanan dari deeplink |
-| `android/app/src/main/AndroidManifest.xml` | Intent filter scheme `dompetkampus` |
+| File                                                          | Peran                                                   |
+| ------------------------------------------------------------- | ------------------------------------------------------- |
+| `lib/core/services/deeplink_service.dart`                     | Menangkap URI masuk, parse parameter, buffer cold-start |
+| `lib/main.dart`                                               | `DeeplinkService().init()` dipanggil sebelum `runApp()` |
+| `lib/presentation/pages/home/home_page.dart`                  | Menerima event deeplink, push ke `/merchant`            |
+| `lib/presentation/pages/merchant/merchant_checkout_page.dart` | Tampilkan detail pesanan dari deeplink                  |
+| `android/app/src/main/AndroidManifest.xml`                    | Intent filter scheme `dompetkampus`                     |
 
 ### Skema URL Deep Link
 
@@ -308,11 +308,11 @@ Aplikasi mendukung **tiga metode 2FA** yang bisa dipilih pengguna saat setup aku
 
 ### Metode 2FA yang Tersedia
 
-| Metode | Cara Kerja | File |
-|--------|-----------|------|
-| **SMTP (Email OTP)** | Backend kirim kode 6 digit ke email user via SMTP | `lib/presentation/pages/auth/twofa_smtp_page.dart` |
-| **TOTP (Google Authenticator)** | QR code di-scan ke Google Authenticator, kode berputar tiap 30 detik | `lib/presentation/pages/auth/twofa_totp_page.dart` |
-| **Push Notification** | Firebase Cloud Messaging (FCM) kirim notifikasi approve/deny | `lib/presentation/pages/auth/twofa_notif_page.dart` |
+| Metode                          | Cara Kerja                                                           | File                                                |
+| ------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------- |
+| **SMTP (Email OTP)**            | Backend kirim kode 6 digit ke email user via SMTP                    | `lib/presentation/pages/auth/twofa_smtp_page.dart`  |
+| **TOTP (Google Authenticator)** | QR code di-scan ke Google Authenticator, kode berputar tiap 30 detik | `lib/presentation/pages/auth/twofa_totp_page.dart`  |
+| **Push Notification**           | Firebase Cloud Messaging (FCM) kirim notifikasi approve/deny         | `lib/presentation/pages/auth/twofa_notif_page.dart` |
 
 ### Alur 2FA saat Login
 
@@ -445,4 +445,4 @@ Future<void> clearAll() async {
 
 ---
 
-*Semester 6 · Institut Teknologi dan Bisnis Bina Sarana Global · 2025/2026*
+_Institut Teknologi dan Bisnis Bina Sarana Global · 2025/2026_
