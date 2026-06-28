@@ -15,22 +15,28 @@
 
 ---
 
+## Repository E-Commerce
+
+**(https://github.com/IlhamMaulana13/UTSApps-MarketPlace.git/)**
+
+---
+
 ## Deskripsi Aplikasi
 
 **Dompet Syari'ah** adalah aplikasi e-money berbasis mobile yang dirancang khusus untuk ekosistem kampus. Aplikasi ini memungkinkan mahasiswa melakukan transaksi keuangan digital secara cepat, aman, dan efisien — mulai dari top up saldo, transfer antar pengguna, hingga pembayaran ke merchant menggunakan sistem deep link lintas aplikasi.
 
 ### Fitur Utama
 
-| Fitur                   | Deskripsi                                                                          |
-| ----------------------- | ---------------------------------------------------------------------------------- |
-| **Autentikasi**         | Register, login, verifikasi email, dan 2FA (SMTP / TOTP / Notifikasi)              |
-| **Top Up Saldo**        | Isi saldo dompet digital secara instan                                             |
-| **Transfer**            | Kirim uang ke sesama pengguna Dompet Syari'ah                                        |
-| **Pembayaran Merchant** | Bayar ke merchant via deep link (`dompetkampus://pay?...`) dari aplikasi eksternal |
-| **Riwayat Transaksi**   | Lihat seluruh histori transaksi dengan detail lengkap                              |
-| **PIN Keamanan**        | Setiap transaksi dikonfirmasi menggunakan PIN 6 digit yang tersimpan aman          |
-| **Halaman Sukses**      | Bukti transaksi dengan detail lengkap dan callback otomatis ke merchant            |
-| **Notifikasi Push**     | Firebase Cloud Messaging untuk notifikasi transaksi real-time                      |
+| Fitur                   | Deskripsi                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| **Autentikasi**         | Register, login, verifikasi email, dan 2FA (SMTP / TOTP / Notifikasi)               |
+| **Top Up Saldo**        | Isi saldo dompet digital secara instan                                              |
+| **Transfer**            | Kirim uang ke sesama pengguna Dompet Syari'ah                                       |
+| **Pembayaran Merchant** | Bayar ke merchant via deep link (`dompetsyariah://pay?...`) dari aplikasi eksternal |
+| **Riwayat Transaksi**   | Lihat seluruh histori transaksi dengan detail lengkap                               |
+| **PIN Keamanan**        | Setiap transaksi dikonfirmasi menggunakan PIN 6 digit yang tersimpan aman           |
+| **Halaman Sukses**      | Bukti transaksi dengan detail lengkap dan callback otomatis ke merchant             |
+| **Notifikasi Push**     | Firebase Cloud Messaging untuk notifikasi transaksi real-time                       |
 
 ---
 
@@ -209,7 +215,7 @@ go build -o app .
 
 ### Riwayat & Akun
 
-| Riwayat Transaksi                                                               | Halaman Promo & Berkah                                                             | Ubah PIN                                                                          |
+| Riwayat Transaksi                                                               | Halaman Promo & Berkah                                                    | Ubah PIN                                                                          |
 | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | _<img src="e-money/assets/screenshots/riwayat.jpg" alt="Riwayat" width="200"/>_ | _<img src="e-money/assets/screenshots/akun.jpg" alt="Akun" width="200"/>_ | _<img src="e-money/assets/screenshots/buatpin.jpg" alt="PINChange" width="200"/>_ |
 
@@ -234,7 +240,7 @@ Deep Link digunakan agar aplikasi **AppsMarketplace (E-Commerce)** bisa meminta 
       │                                           │
       │  1. User klik "Bayar via E-Money"         │
       │──────────────────────────────────────────▶│
-      │  dompetkampus://pay?merchant_id=X          │
+      │  dompetsyariah://pay?merchant_id=X          │
       │  &merchant_name=Y&amount=Z                 │
       │  &description=D&reference=R               │
       │  &callback=appsmarketplace://result        │
@@ -258,13 +264,13 @@ Deep Link digunakan agar aplikasi **AppsMarketplace (E-Commerce)** bisa meminta 
 | `lib/main.dart`                                               | `DeeplinkService().init()` dipanggil sebelum `runApp()` |
 | `lib/presentation/pages/home/home_page.dart`                  | Menerima event deeplink, push ke `/merchant`            |
 | `lib/presentation/pages/merchant/merchant_checkout_page.dart` | Tampilkan detail pesanan dari deeplink                  |
-| `android/app/src/main/AndroidManifest.xml`                    | Intent filter scheme `dompetkampus`                     |
+| `android/app/src/main/AndroidManifest.xml`                    | Intent filter scheme `dompetsyariah`                    |
 
 ### Skema URL Deep Link
 
 ```
 # Dari E-Commerce → E-Money (permintaan bayar)
-dompetkampus://pay
+dompetsyariah://pay
   ?merchant_id=JERSEY_STORE_01
   &merchant_name=Toko%20Jersey
   &amount=2640000
@@ -285,7 +291,7 @@ appsmarketplace://payment-result
 ```dart
 // lib/core/services/deeplink_service.dart
 void _handleUri(Uri uri) {
-  if (uri.scheme == 'dompetkampus' && uri.host == 'pay') {
+  if (uri.scheme == 'dompetsyariah' && uri.host == 'pay') {
     final paymentData = DeeplinkPaymentData(
       merchantId:   uri.queryParameters['merchant_id'] ?? '',
       merchantName: uri.queryParameters['merchant_name'] ?? '',
@@ -439,7 +445,7 @@ Future<void> clearAll() async {
 
 - **Minimum Android:** API 21 (Android 5.0 Lollipop)
 - **Target Android:** API 34 (Android 14)
-- **Deep Link Scheme:** `dompetkampus://pay?amount=...&merchant_id=...`
+- **Deep Link Scheme:** `dompetsyariah://pay?amount=...&merchant_id=...`
 - **Autentikasi:** JWT Bearer Token + 2FA opsional
 - **PIN:** Disimpan lokal di `FlutterSecureStorage`, tidak dikirim ke server — backend menerima `otp_type: "pin"` selama JWT valid
 

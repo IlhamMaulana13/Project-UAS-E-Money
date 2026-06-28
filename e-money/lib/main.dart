@@ -44,26 +44,34 @@ void main() async {
     statusBarIconBrightness: Brightness.dark,
   ));
 
-  runApp(const DompetKampusApp());
+  runApp(const dompetsyariahApp());
 }
 
-class DompetKampusApp extends StatefulWidget {
-  const DompetKampusApp({super.key});
+class dompetsyariahApp extends StatefulWidget {
+  const dompetsyariahApp({super.key});
 
   @override
-  State<DompetKampusApp> createState() => _DompetKampusAppState();
+  State<dompetsyariahApp> createState() => _dompetsyariahAppState();
 }
 
-class _DompetKampusAppState extends State<DompetKampusApp> {
+class _dompetsyariahAppState extends State<dompetsyariahApp> {
   @override
   void initState() {
     super.initState();
 
-    // Dengarkan Deeplink dan arahkan menggunakan GoRouter
+    // Warm-start: app sudah berjalan, deeplink masuk lewat stream
     DeeplinkService().onPaymentReceived.listen((paymentData) {
-      // Asumsi: Anda memiliki route bernama '/payment-deeplink' di AppRouter
-      // Kita kirimkan paymentData sebagai 'extra' ke router
       AppRouter.router.push('/payment-deeplink', extra: paymentData);
+    });
+
+    // Cold-start: deeplink tiba sebelum listener di atas dipasang,
+    // _pendingPayment sudah disimpan oleh DeeplinkService.init() — ambil sekarang.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final pending = DeeplinkService().pendingPayment;
+      if (pending != null) {
+        DeeplinkService().consumePendingPayment();
+        AppRouter.router.push('/payment-deeplink', extra: pending);
+      }
     });
   }
 
