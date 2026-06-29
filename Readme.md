@@ -215,9 +215,9 @@ go build -o app .
 
 ### Riwayat & Akun
 
-| Riwayat Transaksi                                                               | Halaman Promo & Berkah                                                    | Ubah PIN                                                                          |
+| Riwayat Transaksi                                                               | Halaman Promo & Berkah                                                    | Halaman Akun                                                                          |
 | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| _<img src="e-money/assets/screenshots/riwayat.jpg" alt="Riwayat" width="200"/>_ | _<img src="e-money/assets/screenshots/akun.jpg" alt="Akun" width="200"/>_ | _<img src="e-money/assets/screenshots/buatpin.jpg" alt="PINChange" width="200"/>_ |
+| _<img src="e-money/assets/screenshots/riwayat.jpg" alt="Riwayat" width="200"/>_ | _<img src="e-money/assets/screenshots/akun.jpg" alt="Akun" width="200"/>_ | _<img src="e-money/assets/screenshots/profil.jpg" alt="PROFILE" width="200"/>_ |
 
 ---
 
