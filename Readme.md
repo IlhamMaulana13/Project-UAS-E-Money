@@ -199,26 +199,24 @@ go build -o app .
 
 ### Autentikasi & Onboarding
 
-| Splash Screen                                                                              |
-| Login                                                                       | Register                                                                       | Verifikasi 2FA                                                          |
-| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| ------------------------------------------------------------------------------------------ |
+| Splash Screen | Login | Register | Verifikasi 2FA |
+| :-----------: | :---: | :------: | :------------: |
 | _<img src="e-money/assets/screenshots/auth.jpg" alt="Splash Screen" width="200"/>_ | _<img src="e-money/assets/screenshots/login.jpg" alt="Login" width="200"/>_ | _<img src="e-money/assets/screenshots/regis.jpg" alt="Register" width="200"/>_ | _<img src="e-money/assets/screenshots/2fa.jpg" alt="2fa" width="200"/>_ |
 
 ### Fitur Utama
 
-| Home                                                                      | Transfer                                                                          | Top Up                                                                      |
-| ------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Home | Transfer | Top Up |
+| :--: | :------: | :----: |
 | _<img src="e-money/assets/screenshots/home.jpg" alt="Home" width="200"/>_ | _<img src="e-money/assets/screenshots/transfer.jpg" alt="Transfer" width="200"/>_ | _<img src="e-money/assets/screenshots/topup.jpg" alt="TopUp" width="200"/>_ |
 
-| PIN Keamanan                                                                 | Pembayaran Merchant                                                                 | Halaman Sukses                                                                |
-| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| PIN Keamanan | Pembayaran Merchant | Halaman Sukses |
+| :----------: | :-----------------: | :------------: |
 | _<img src="e-money/assets/screenshots/inputpin.jpg" alt="PIN" width="200"/>_ | _<img src="e-money/assets/screenshots/bayar.jpg" alt="BayarMerchant" width="200"/>_ | _<img src="e-money/assets/screenshots/sukses.jpg" alt="Sukses" width="200"/>_ |
 
 ### Riwayat & Akun
 
-| Riwayat Transaksi                                                               | Halaman Promo & Berkah                                                    | Halaman Akun                                                                          |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Riwayat Transaksi | Halaman Promo & Berkah | Halaman Akun |
+| :---------------: | :--------------------: | :----------: |
 | _<img src="e-money/assets/screenshots/riwayat.jpg" alt="Riwayat" width="200"/>_ | _<img src="e-money/assets/screenshots/akun.jpg" alt="Akun" width="200"/>_ | _<img src="e-money/assets/screenshots/profil.jpg" alt="PROFILE" width="200"/>_ |
 
 ---
