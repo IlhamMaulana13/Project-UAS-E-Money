@@ -103,9 +103,9 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, state) {
         if (state is AuthNeedsVerification) {
           if (state.user.totpEnabled) {
-            context.go('/2fa/totp');
+            context.go('/2fa/totp', extra: {'mode': 'login'});
           } else {
-            context.go('/2fa/smtp');
+            context.go('/2fa/smtp', extra: {'mode': 'login'});
           }
         } else if (state is AuthAuthenticated) {
           final pending = DeeplinkService().pendingPayment;

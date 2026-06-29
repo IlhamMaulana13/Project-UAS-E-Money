@@ -225,7 +225,9 @@ go build -o app .
 
 > **Video demo & presentasi aplikasi:**
 
-🎬 **[Tonton di YouTube — [UAS Mobile] Dompet Syari'ah — Aplikasi E-Money & E-Commerce dengan Deep Link + 2FA](https://youtu.be/DfQiKn82G3s)**
+[![Thumbnail Video Presentasi](e-money/assets/screenshots/thumbnail.png)](https://youtu.be/B-ZJD73Y638)
+
+🎬 **[Tonton di YouTube — [UAS Mobile] Dompet Syari'ah — Aplikasi E-Money & E-Commerce dengan Deep Link + 2FA](https://youtu.be/B-ZJD73Y638)**
 
 ---
 
