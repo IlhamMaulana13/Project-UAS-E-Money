@@ -11,4 +11,5 @@ abstract class AuthRepository {
   Future<UserEntity?> getSavedUser();
   Future<void> setAuthVerified(bool verified);
   Future<bool> isAuthVerified();
+  void setAuthToken(String token);
 }

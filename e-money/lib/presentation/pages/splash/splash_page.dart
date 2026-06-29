@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/services/deeplink_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../widgets/app_button.dart';
@@ -17,13 +18,25 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    // Hapus sesi lama agar user wajib login setiap buka aplikasi
-    context.read<AuthBloc>().add(AuthClearSession());
+    // Coba pulihkan sesi. Jika tidak ada / tidak valid, AuthBloc emit AuthUnauthenticated.
+    context.read<AuthBloc>().add(AuthCheckRequested());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthAuthenticated) {
+          final pending = DeeplinkService().pendingPayment;
+          if (pending != null) {
+            DeeplinkService().consumePendingPayment();
+            context.go('/payment-deeplink', extra: pending);
+          } else {
+            context.go('/home');
+          }
+        }
+      },
+      child: Scaffold(
         body: Container(
           decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
           child: SafeArea(
@@ -107,6 +120,7 @@ class _SplashPageState extends State<SplashPage> {
             ),
           ),
         ),
+      ),
     );
   }
 }

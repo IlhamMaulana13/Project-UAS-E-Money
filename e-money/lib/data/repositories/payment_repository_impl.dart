@@ -41,6 +41,8 @@ class PaymentRepositoryImpl implements PaymentRepository {
         amount: e.amount ?? 0,
         message: e.message,
       );
+    } on UnauthorizedException catch (_) {
+      throw const ServerFailure('Sesi habis, silakan login ulang.');
     } on ServerException catch (e) {
       throw ServerFailure(e.message);
     } on NetworkException catch (e) {

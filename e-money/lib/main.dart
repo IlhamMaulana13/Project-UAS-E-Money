@@ -64,15 +64,9 @@ class _dompetsyariahAppState extends State<dompetsyariahApp> {
       AppRouter.router.push('/payment-deeplink', extra: paymentData);
     });
 
-    // Cold-start: deeplink tiba sebelum listener di atas dipasang,
-    // _pendingPayment sudah disimpan oleh DeeplinkService.init() — ambil sekarang.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final pending = DeeplinkService().pendingPayment;
-      if (pending != null) {
-        DeeplinkService().consumePendingPayment();
-        AppRouter.router.push('/payment-deeplink', extra: pending);
-      }
-    });
+    // Cold-start: _pendingPayment disimpan oleh DeeplinkService.init().
+    // Navigasi ke /payment-deeplink ditangani setelah auth selesai
+    // (di splash_page, login_page, dan halaman 2FA).
   }
 
   @override

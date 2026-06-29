@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/services/deeplink_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../blocs/auth/otp_bloc.dart';
@@ -61,7 +62,13 @@ class _TwoFASmtpPageState extends State<TwoFASmtpPage> {
             context.go('/home');
           } else {
             context.read<AuthBloc>().add(AuthCheckRequested());
-            context.go('/home');
+            final pending = DeeplinkService().pendingPayment;
+            if (pending != null) {
+              DeeplinkService().consumePendingPayment();
+              context.go('/payment-deeplink', extra: pending);
+            } else {
+              context.go('/home');
+            }
           }
         } else if (state is OtpInvalid) {
           setState(() { _hasError = true; });

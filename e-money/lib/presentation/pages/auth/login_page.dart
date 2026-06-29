@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../core/services/deeplink_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../widgets/app_button.dart';
@@ -107,7 +108,13 @@ class _LoginPageState extends State<LoginPage> {
             context.go('/2fa/smtp');
           }
         } else if (state is AuthAuthenticated) {
-          context.go('/home');
+          final pending = DeeplinkService().pendingPayment;
+          if (pending != null) {
+            DeeplinkService().consumePendingPayment();
+            context.go('/payment-deeplink', extra: pending);
+          } else {
+            context.go('/home');
+          }
         } else if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

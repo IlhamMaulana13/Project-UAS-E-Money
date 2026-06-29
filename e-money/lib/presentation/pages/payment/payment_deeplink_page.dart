@@ -28,6 +28,8 @@ class PaymentDeeplinkPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasItems = paymentData.items.isNotEmpty;
+
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: Column(
@@ -46,7 +48,7 @@ class PaymentDeeplinkPage extends StatelessWidget {
                 ),
                 const Expanded(
                   child: Text(
-                    'Konfirmasi Pembayaran',
+                    'Detail Pesanan',
                     style: TextStyle(
                       fontFamily: 'PlusJakartaSans',
                       color: Colors.white,
@@ -58,139 +60,254 @@ class PaymentDeeplinkPage extends StatelessWidget {
               ],
             ),
           ),
+
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Merchant card
+                  // Merchant info
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(18),
                       boxShadow: AppColors.shadowSoft,
                     ),
-                    child: Column(
+                    child: Row(
                       children: [
                         Container(
-                          width: 64,
-                          height: 64,
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
                             color: AppColors.primarySurface,
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(14),
                           ),
                           child: const Center(
                             child: Icon(Icons.storefront_outlined,
-                                size: 32, color: AppColors.primary),
+                                size: 26, color: AppColors.primary),
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Pembayaran ke',
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 13,
-                            color: AppColors.slate400,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Dari toko',
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 11.5,
+                                  color: AppColors.slate400,
+                                ),
+                              ),
+                              Text(
+                                paymentData.merchantName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 14.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.ink,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          paymentData.merchantName,
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.ink,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  // Amount card
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 24, horizontal: 20),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: AppColors.shadowPrimary,
-                    ),
-                    child: Column(
-                      children: [
-                        const Text(
-                          'Total Tagihan',
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 13.5,
-                            color: Colors.white70,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          CurrencyFormatter.format(paymentData.amount),
-                          style: const TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 34,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        if (paymentData.reference.isNotEmpty) ...[
-                          const SizedBox(height: 10),
+                        if (paymentData.reference.isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 5),
+                                horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.18),
+                              color: AppColors.primarySurface,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
-                              'Ref: ${paymentData.reference}',
+                              paymentData.reference,
                               style: const TextStyle(
                                 fontFamily: 'PlusJakartaSans',
-                                fontSize: 12,
-                                color: Colors.white,
-                                letterSpacing: 0.2,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primary,
                               ),
                             ),
                           ),
-                        ],
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 14),
-                  // Detail rows
+
+                  // Order items list
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 6),
+                    width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(18),
                       boxShadow: AppColors.shadowSoft,
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _Row(
-                          label: 'Deskripsi',
-                          value: paymentData.description,
+                        const Padding(
+                          padding:
+                              EdgeInsets.fromLTRB(16, 14, 16, 10),
+                          child: Row(
+                            children: [
+                              Icon(Icons.receipt_long_outlined,
+                                  size: 17, color: AppColors.primary),
+                              SizedBox(width: 7),
+                              Text(
+                                'Detail Pesanan',
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.ink,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         const Divider(height: 1, color: AppColors.line2),
-                        _Row(
-                          label: 'ID Merchant',
-                          value: paymentData.merchantId,
+                        if (hasItems)
+                          ...paymentData.items.asMap().entries.map((e) {
+                            final isLast =
+                                e.key == paymentData.items.length - 1;
+                            final item = e.value;
+                            final subtotal = item.qty * item.price;
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Qty badge
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primarySurface,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '${item.qty}x',
+                                            style: const TextStyle(
+                                              fontFamily: 'PlusJakartaSans',
+                                              fontSize: 11.5,
+                                              fontWeight: FontWeight.w800,
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      // Name & size
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.name,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontFamily: 'PlusJakartaSans',
+                                                fontSize: 13.5,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.ink,
+                                              ),
+                                            ),
+                                            if (item.size.isNotEmpty &&
+                                                item.size != '-')
+                                              Text(
+                                                'Ukuran: ${item.size}',
+                                                style: const TextStyle(
+                                                  fontFamily: 'PlusJakartaSans',
+                                                  fontSize: 11.5,
+                                                  color: AppColors.slate400,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      // Subtotal
+                                      Text(
+                                        CurrencyFormatter.format(subtotal),
+                                        style: const TextStyle(
+                                          fontFamily: 'PlusJakartaSans',
+                                          fontSize: 13.5,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.ink,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (!isLast)
+                                  const Divider(
+                                      height: 1,
+                                      color: AppColors.line2,
+                                      indent: 16,
+                                      endIndent: 16),
+                              ],
+                            );
+                          })
+                        else
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+                            child: Text(
+                              paymentData.description,
+                              style: const TextStyle(
+                                fontFamily: 'PlusJakartaSans',
+                                fontSize: 13.5,
+                                color: AppColors.slate600,
+                              ),
+                            ),
+                          ),
+                        const Divider(height: 1, color: AppColors.line2),
+                        // Total row
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Total Tagihan',
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.ink,
+                                ),
+                              ),
+                              Text(
+                                CurrencyFormatter.format(paymentData.amount),
+                                style: const TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 14),
+
                   // Payment method
                   Container(
                     padding: const EdgeInsets.all(14),
@@ -236,6 +353,7 @@ class PaymentDeeplinkPage extends StatelessWidget {
               ),
             ),
           ),
+
           // Action bar
           Container(
             color: Colors.white,
@@ -255,44 +373,6 @@ class PaymentDeeplinkPage extends StatelessWidget {
                   onPressed: () => context.go('/home'),
                 ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Row extends StatelessWidget {
-  final String label;
-  final String value;
-  const _Row({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontFamily: 'PlusJakartaSans',
-              fontSize: 12,
-              color: AppColors.slate400,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            value,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontFamily: 'PlusJakartaSans',
-              fontSize: 13.5,
-              fontWeight: FontWeight.w700,
-              color: AppColors.ink,
             ),
           ),
         ],

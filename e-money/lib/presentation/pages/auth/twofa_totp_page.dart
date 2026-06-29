@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/services/deeplink_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../blocs/auth/otp_bloc.dart';
 import '../../widgets/app_button.dart';
@@ -56,8 +57,16 @@ class _TwoFATotpPageState extends State<TwoFATotpPage> {
       listener: (context, state) {
         if (state is OtpTotpSetup) {
           setState(() => _step = 'scan');
-        } else if (state is OtpTotpEnabled || state is OtpVerified) {
+        } else if (state is OtpTotpEnabled) {
           context.go('/home');
+        } else if (state is OtpVerified) {
+          final pending = DeeplinkService().pendingPayment;
+          if (pending != null) {
+            DeeplinkService().consumePendingPayment();
+            context.go('/payment-deeplink', extra: pending);
+          } else {
+            context.go('/home');
+          }
         } else if (state is OtpInvalid) {
           setState(() => _hasError = true);
           Future.delayed(const Duration(milliseconds: 650), () {

@@ -1,6 +1,20 @@
 import 'dart:async';
 import 'package:app_links/app_links.dart';
 
+class OrderItem {
+  final int qty;
+  final String name;
+  final String size;
+  final double price;
+
+  const OrderItem({
+    required this.qty,
+    required this.name,
+    required this.size,
+    required this.price,
+  });
+}
+
 class DeeplinkPaymentData {
   final String merchantId;
   final String merchantName;
@@ -8,6 +22,7 @@ class DeeplinkPaymentData {
   final String description;
   final String reference;
   final String callbackUrl;
+  final List<OrderItem> items;
 
   DeeplinkPaymentData({
     required this.merchantId,
@@ -16,6 +31,7 @@ class DeeplinkPaymentData {
     required this.description,
     required this.reference,
     required this.callbackUrl,
+    this.items = const [],
   });
 }
 
@@ -32,7 +48,6 @@ class DeeplinkService {
   Stream<DeeplinkPaymentData> get onPaymentReceived =>
       _paymentDataController.stream;
 
-  // Buffer untuk cold-start: deeplink tiba sebelum listener terpasang
   DeeplinkPaymentData? _pendingPayment;
   DeeplinkPaymentData? get pendingPayment => _pendingPayment;
   void consumePendingPayment() => _pendingPayment = null;
@@ -58,8 +73,24 @@ class DeeplinkService {
       final description = params['description'] ?? 'Pembayaran';
       final reference = params['reference'] ?? '';
       final callbackUrl = params['callback'] ?? '';
-
       final amount = double.tryParse(amountStr) ?? 0.0;
+
+      // Parse structured items: "2|Jersey A|M|150000~1|Jersey B|L|200000"
+      final itemsStr = params['items'] ?? '';
+      final items = <OrderItem>[];
+      if (itemsStr.isNotEmpty) {
+        for (final raw in itemsStr.split('~')) {
+          final parts = raw.split('|');
+          if (parts.length >= 4) {
+            items.add(OrderItem(
+              qty: int.tryParse(parts[0]) ?? 1,
+              name: parts[1],
+              size: parts[2],
+              price: double.tryParse(parts[3]) ?? 0,
+            ));
+          }
+        }
+      }
 
       if (merchantId.isNotEmpty && amount > 0) {
         final paymentData = DeeplinkPaymentData(
@@ -69,9 +100,9 @@ class DeeplinkService {
           description: description,
           reference: reference,
           callbackUrl: callbackUrl,
+          items: items,
         );
 
-        // Simpan untuk cold-start (sebelum listener terpasang)
         _pendingPayment = paymentData;
         _paymentDataController.add(paymentData);
       }

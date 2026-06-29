@@ -78,6 +78,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  void setAuthToken(String token) {
+    _remote.setAuthToken(token);
+  }
+
+  @override
   Future<void> logout() async {
     await _local.clearAll();
     _remote.clearAuthToken();

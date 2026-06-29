@@ -73,58 +73,87 @@ class _HomePageState extends State<HomePage> {
                         ),
                         padding: EdgeInsets.fromLTRB(
                             20, MediaQuery.of(context).padding.top + 12, 20, 94),
-                        child: Row(
+                        child: Stack(
+                          clipBehavior: Clip.none,
                           children: [
-                            AppAvatar(
-                                name: fullName,
-                                size: 44,
-                                bg: Colors.white.withValues(alpha: 0.25)),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('Selamat siang,',
-                                      style: TextStyle(
-                                        fontFamily: 'PlusJakartaSans',
-                                        fontSize: 13,
-                                        color: Colors.white70,
-                                      )),
-                                  Text('$firstName ',
-                                      style: const TextStyle(
-                                        fontFamily: 'PlusJakartaSans',
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w800,
-                                        color: Colors.white,
-                                        letterSpacing: -0.2,
-                                      )),
-                                ],
+                            Positioned(
+                              right: -20,
+                              top: -20,
+                              child: Container(
+                                width: 110,
+                                height: 110,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withValues(alpha: 0.07),
+                                ),
                               ),
                             ),
-                            Stack(
-                              children: [
-                                Container(
-                                  width: 42,
-                                  height: 42,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.18),
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  child: const Icon(Icons.notifications_outlined,
-                                      size: 21, color: Colors.white),
+                            Positioned(
+                              right: 30,
+                              top: 30,
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withValues(alpha: 0.05),
                                 ),
-                                Positioned(
-                                  top: 10,
-                                  right: 11,
-                                  child: Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.amber,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(color: Colors.white, width: 2),
-                                    ),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                AppAvatar(
+                                    name: fullName,
+                                    size: 44,
+                                    bg: Colors.white.withValues(alpha: 0.25)),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text('Assalamualaikum,',
+                                          style: TextStyle(
+                                            fontFamily: 'PlusJakartaSans',
+                                            fontSize: 13,
+                                            color: Colors.white70,
+                                          )),
+                                      Text('$firstName ',
+                                          style: const TextStyle(
+                                            fontFamily: 'PlusJakartaSans',
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w800,
+                                            color: Colors.white,
+                                            letterSpacing: -0.2,
+                                          )),
+                                    ],
                                   ),
+                                ),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      width: 42,
+                                      height: 42,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(alpha: 0.18),
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      child: const Icon(Icons.notifications_outlined,
+                                          size: 21, color: Colors.white),
+                                    ),
+                                    Positioned(
+                                      top: 10,
+                                      right: 11,
+                                      child: Container(
+                                        width: 8,
+                                        height: 8,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.amber,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: Colors.white, width: 2),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -311,9 +340,9 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.primarySurface,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: AppColors.shadowSoft,
+              border: Border.all(color: AppColors.primaryBorder, width: 1),
             ),
             child: Row(
               children: [
@@ -327,7 +356,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 11.5,
-                            color: AppColors.slate500,
+                            color: AppColors.slate600,
                             fontWeight: FontWeight.w600)),
                     Text('1.250',
                         style: TextStyle(
@@ -346,9 +375,9 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.primarySurface,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: AppColors.shadowSoft,
+              border: Border.all(color: AppColors.primaryBorder, width: 1),
             ),
             child: Row(
               children: [
@@ -362,7 +391,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
                             fontSize: 11.5,
-                            color: AppColors.slate500,
+                            color: AppColors.slate600,
                             fontWeight: FontWeight.w600)),
                     Text('Aktif',
                         style: TextStyle(
@@ -391,10 +420,37 @@ class _HomePageState extends State<HomePage> {
       {'icon': Icons.bolt_outlined, 'label': 'PLN', 'tone': 'amber'},
       {'icon': Icons.more_horiz_rounded, 'label': 'Lainnya', 'tone': 'slate'},
     ];
-    return Container(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 4,
+              height: 17,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              "Layanan Syari'ah",
+              style: TextStyle(
+                fontFamily: 'PlusJakartaSans',
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: AppColors.ink,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.line2, width: 1.5),
         boxShadow: AppColors.shadowSoft,
       ),
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
@@ -425,6 +481,8 @@ class _HomePageState extends State<HomePage> {
           );
         }).toList(),
       ),
+        ),
+      ],
     );
   }
 
@@ -504,13 +562,26 @@ class _HomePageState extends State<HomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Transaksi terakhir',
-                style: TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.ink,
-                )),
+            Row(
+              children: [
+                Container(
+                  width: 4,
+                  height: 17,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Text('Transaksi Terakhir',
+                    style: TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.ink,
+                    )),
+              ],
+            ),
             GestureDetector(
               onTap: () => context.go('/history'),
               child: const Text('Lihat semua',
