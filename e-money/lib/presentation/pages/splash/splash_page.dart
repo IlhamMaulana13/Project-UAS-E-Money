@@ -29,8 +29,12 @@ class _SplashPageState extends State<SplashPage> {
         if (state is AuthAuthenticated) {
           final pending = DeeplinkService().pendingPayment;
           if (pending != null) {
-            DeeplinkService().consumePendingPayment();
-            context.go('/payment-deeplink', extra: pending);
+            // Wajib 2FA untuk verifikasi transaksi sebelum tampil payment detail
+            if (state.user.totpEnabled) {
+              context.go('/2fa/totp', extra: {'mode': 'login'});
+            } else {
+              context.go('/2fa/smtp', extra: {'mode': 'login'});
+            }
           } else {
             context.go('/home');
           }
